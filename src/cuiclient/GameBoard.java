@@ -162,15 +162,7 @@ public class GameBoard {
     }
     
   
-    public GameBoard() {
-        this.teamPoint = new int[2];
-        this.unitLocation = new Point[2][4];
-        for (int i = 0; i < 4; i++) {
-            this.unitLocation[0][i] = new Point();
-            this.unitLocation[1][i] = new Point();
-        }
-        this.towerHold = new int[3];
-    }
+
     
 
 //
@@ -899,12 +891,13 @@ public class GameBoard {
     }
     
     
- //
- // クラス定義
- //
+ // -----------------------------------------------------------------------------------------
+ //     静的メソッド類
+ //     ボードの状態とは関係なく
+//      初期化や評価の計算時に利用するメソッド類
+ // ------------------------------------------------------------------------------------------
     
 
-    
     
      /** ２点の距離を計算（上下左右、斜めのどこでも１歩） */
     public static int distance(Point a,Point b){
@@ -923,7 +916,6 @@ public class GameBoard {
             }
         }
     }   
-    
     
      /** 物理的に移動可能かどうか判断 */
     public static boolean availableArea(int x,int y){
@@ -952,26 +944,64 @@ public class GameBoard {
         return min;      
     }
     
-    //複数で重なっている数
-    public static int multiple(int i, int id,GameBoard board) {
+    /**
+     * 指定した座標から最も近いタワーの番号を取得する
+     * @param p 座標
+     * @return 最も近いタワーの番号
+     */
+    public static int distanceTowerNumber(Point p) {
+        int min = Integer.MAX_VALUE;
+        int number = 0;
+        for (int i = 0; i < 3; i++) {
+            int tmp = distance(p, towerPos[i]);
+            if (tmp < min) {
+                min = tmp;
+                number = i;
+            }
+        }
+        return number;
+    }
+    
+    
+    //  -----------------------------------------------------------------------------------------------------------------
+    //  評価を求める際に利用する関数群
+    //  gameboardを利用しているのでメンバ関数にしておきました
+    //  -----------------------------------------------------------------------------------------------------------------
+    
+    /**
+     * 関数multiple
+     * 指定したユニットと同位置にある敵ユニットの数を返す
+     * @param i ユニット番号
+     * @param id プレイヤーID
+     * @return 重なってる（idとは逆の）敵ユニット数を返す
+     */
+    public int multiple(int i, int id) {
         int count = 0;
-        int X = board.unitLocation[id][i].x;
-        int Y = board.unitLocation[id][i].y;
+        int X = unitLocation[id][i].x;
+        int Y = unitLocation[id][i].y;
         for (int j = 0; j < 3; j++) {
-            if (i != j && board.unitLocation[id][j].x == X && board.unitLocation[id][j].y == Y) {
+            if (i != j && unitLocation[id][j].x == X && unitLocation[id][j].y == Y) {
                 count++;
             }
         }
         return count;
     }
 
-    //最も近いユニットナンバー
-    public static int mostNear(int id1, int i, int id2,GameBoard board) {
+    
+    /**
+     * 関数mostNear
+     * 最も近いユニット番号を返す
+     * @param id1 対象となるユニットのプレイヤー
+     * @param i 対象となるユニット番号
+     * @param id2 どのプレイヤーのユニットの中から最も近いユニットを探すか
+     * @return 最も近いユニット番号
+     */
+    public int mostNear(int id1, int i, int id2) {
         int nearUnit = 0;
         int nearLength = 10;
         int length = 0;
         for (int j = 0; j < 3; j++) {
-            length = GameBoard.distance(board.unitLocation[id1][i], board.unitLocation[id2][j]);
+            length = GameBoard.distance(unitLocation[id1][i], unitLocation[id2][j]);
             if (length < nearLength) {
                 nearUnit = j;
                 nearLength = length;
@@ -979,4 +1009,34 @@ public class GameBoard {
         }
         return nearUnit;
     }
+
+
+    /**
+     * 関数peripheral
+     * 指定したタワーと、ユニット4体の距離を点数化する
+     * 距離は重みづけ関数により評価される
+     * @param tower タワー番号
+     * @param eId 敵のID
+     * @return 点数
+     */
+    public int peripheral(int tower, int eId) {
+        //タワーから順に3,2,1で下がる
+        int count = 0;
+        for (int i = 0; i < 3; i++) {
+            int length = distance(unitLocation[eId][i], towerPos[tower]);
+            if (length == 0)//タワー上
+            {
+                count += Math.sqrt(3);
+            } else if (length < 3)//タワーよりどのくらい離れているか
+            {
+                count += Math.sqrt(2 / length);
+            }
+        }
+        return count;
+    }
+
+
+
+
+
 }

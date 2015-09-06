@@ -20,7 +20,8 @@ package cuiclient;
         }
         
         @Override
-        public String toString() {
-            return "" + x + "," + y + " index:" + index + " id:" + playerId;
+        public String toString(){
+            return ""+x+","+y+" index:"+index+" id:"+playerId;
         }
+        
     }

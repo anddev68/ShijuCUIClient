@@ -10,7 +10,6 @@ import cuiclient.connection.PlayReceiver;
 import cuiclient.connection.ServerThread;
 import java.util.Scanner;
 
-import lib68.ai.minmax.FixedMinMax;
 
 
 /**
@@ -99,21 +98,7 @@ public class CUIClient {
         
     }
     
-    private void printRecursive(ShijuGameNode root, int depth) {
-        if (root == null || root.getChildrenSize() == 0) {
-            return;
-        }
 
-        for (int i = 0; i < depth; i++) {
-            System.out.print(" ");
-        }
-
-        root.print();
-
-        for (int i = 0; i < root.getChildrenSize(); i++) {
-            printRecursive((ShijuGameNode) root.getChild(i), depth + 1);
-        }
-    }
     
     
     /**

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class MinMax {
     
     int playerTeamId;
-    double k1,k2,k3,k4;
+    double k1,k2,k3,k4,k5;
     
     public MinMax(int id){this.playerTeamId = id;}
     
@@ -24,6 +24,7 @@ public class MinMax {
         this.k2 = args[1];
         this.k3 = args[2];
         this.k4 = args[3];
+        this.k5  =args[4];
     }
     
     //  乱数によって動かす方向を決定するための配列
@@ -134,27 +135,45 @@ public class MinMax {
         //  相性評価
         int length = 0;
         for (int i = 0; i < 3; i++) {     //全ての駒に対して
-            int MNE = GameBoard.mostNear(playerTeamId, i, enemyTeamId,board);  //MNE = mostNearEnemy
+            int MNE = board.mostNear(playerTeamId, i, enemyTeamId);  //MNE = mostNearEnemy
             Point P = board.unitLocation[playerTeamId][i];
             Point E = board.unitLocation[enemyTeamId][MNE];
-            if (GameBoard.multiple(i, playerTeamId,board) < GameBoard.multiple(MNE, enemyTeamId,board)) //相手のほうが多い
+            /*            if(multiple(i,playerTeamId)<multiple(MNE,enemyTeamId))      //相手のほうが多い
+             length -= GameBoard.distance(P, E);
+             else if(multiple(MNE,enemyTeamId) < multiple(i,playerTeamId))       //自分のほうが多い
+             length += multiple(MNE,enemyTeamId);
+             else{       //同数
+             if((i!=3 && i==MNE+1)||(i==3 && MNE==0))    //勝てる時
+             length += GameBoard.distance(P, E);
+             else if((i!=0 &&i==MNE-1)||(i==0 && MNE==3))//負ける時
+             length -= multiple(MNE,enemyTeamId);
+             //引き分けは加算無し
+             }*/
+
+            // (相手の数-自分の数) * 距離 の分だけ変化
+            if ((i != 3 && i == MNE + 1) || (i == 3 && MNE == 0)) //勝てる時
             {
-                length -= GameBoard.distance(P, E);
-            } else if (GameBoard.multiple(MNE, enemyTeamId,board) < GameBoard.multiple(i, playerTeamId,board)) //自分のほうが多い
+                length += (board.multiple(i, playerTeamId) - board.multiple(MNE, enemyTeamId)) * GameBoard.distance(P, E);
+            } else if ((i != 0 && i == MNE - 1) || (i == 0 && MNE == 3))//負ける時
             {
-                length += GameBoard.multiple(MNE, enemyTeamId,board);
-            } else {       //同数
-                if ((i != 3 && i == MNE + 1) || (i == 3 && MNE == 0)) //勝てる時
-                {
-                    length += GameBoard.multiple(MNE, enemyTeamId,board);
-                } else if ((i != 0 && i == MNE - 1) || (i == 0 && MNE == 3))//負ける時
-                {
-                    length -= GameBoard.distance(P, E);
-                }
-                //引き分けは加算無し
+                length -= (board.multiple(i, playerTeamId) - board.multiple(MNE, enemyTeamId)) * GameBoard.distance(P, E);
             }
+
         }
         score += k4 * length;
+
+        //タワーの取りやすさ
+        int count = 0;
+        for (int i = 0; i < 3; i++) {
+            if (board.towerHold[i] != playerTeamId) {
+                count -= board.peripheral(GameBoard.distanceTowerNumber(board.unitLocation[playerTeamId][i]), enemyTeamId)
+                        * GameBoard.distanceTower(board.unitLocation[playerTeamId][i]);
+            }
+        }
+
+        score += k5 * count;
+        
+        
 
         return score;
     }
