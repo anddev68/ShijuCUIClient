@@ -161,7 +161,16 @@ public class GameBoard {
         this.lastY = c.lastY;
     }
     
-  
+    
+    public GameBoard() {
+        this.teamPoint = new int[2];
+        this.unitLocation = new Point[2][4];
+        for (int i = 0; i < 4; i++) {
+            this.unitLocation[0][i] = new Point();
+            this.unitLocation[1][i] = new Point();
+        }
+        this.towerHold = new int[3];
+    }
 
     
 

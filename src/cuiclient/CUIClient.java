@@ -82,7 +82,7 @@ public class CUIClient {
         log("start AI.");
 
         MinMax minMax = new MinMax(teamId);
-        minMax.setParams(0.943611,/* 0.868922*/ 0.0, 0.258497, 0.072230);
+        minMax.setParams(0.686014,0.730685,0.520478,0.206630,0.265467);
         
         MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
         Hand hand = result.optimized;
