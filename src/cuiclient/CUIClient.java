@@ -8,14 +8,10 @@ package cuiclient;
 import cuiclient.connection.LoginReceiver;
 import cuiclient.connection.PlayReceiver;
 import cuiclient.connection.ServerThread;
-import java.io.IOException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import lib68.ai.Node;
+
 import lib68.ai.minmax.FixedMinMax;
-import lib68.ai.minmax.MinMax;
-import lib68.ai.minmax.NegaMax;
+
 
 /**
  *
