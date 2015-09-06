@@ -72,7 +72,8 @@ public class GameBoard {
     public int lastY;
     public int lastId;
     
-    
+    public ArrayList<Integer> AIunit1 = new ArrayList<Integer>();
+    public ArrayList<Integer> AIunit2 = new ArrayList<Integer>();
     
     /**
      * 最後に動かした手の情報を保存しておく
@@ -132,16 +133,6 @@ public class GameBoard {
         }
         this.handHistory = new LinkedList(staticHandHistory);
         
-    }
-    
-    public GameBoard(){
-        this.teamPoint = new int[2];
-        this.unitLocation = new Point[2][4];
-        for (int i = 0; i < 4; i++) {
-            this.unitLocation[0][i] = new Point();
-            this.unitLocation[1][i] = new Point();
-        }
-        this.towerHold = new int[3];
     }
     
     
@@ -209,7 +200,7 @@ public class GameBoard {
      * @param nowplayerId
      * @return true 有効手 false 無効手
      */
-    private static boolean formula1(int movex,int movey,int x,int y,int nowplayerId){
+    public static boolean formula1(int movex,int movey,int x,int y,int nowplayerId){
         int result = 0;
         if(0 == nowplayerId){
             result = effectiverange[y][x];
@@ -476,8 +467,6 @@ public class GameBoard {
             //  移動候補手
             ArrayList<Hand> canditate = new ArrayList();
             
-            
-            
             int id = playout.whoIsPlay();
             for(int j=0; j<4; j++){ //  すべての手について
                 
@@ -513,6 +502,7 @@ public class GameBoard {
                     //  ここまできたら候補に追加
                     canditate.add(new Hand(x,y,j,id));
                 }
+
             }
             
             //  候補からランダム選択
@@ -529,7 +519,10 @@ public class GameBoard {
 
             //  動かす
             boolean result = playout.movePos(hand.x, hand.y, hand.index);
-           
+            if(!result){
+                System.out.println("GameBoard#doPlayout(), 無効な動きが選択されました");
+            }
+
             //  ログに保存
             history.addLast(hand);
             if(history.size()>5)
@@ -601,11 +594,14 @@ public class GameBoard {
         
         //  範囲外参照チェック
         if(!GameBoard.availableArea(x, y)){
+            System.out.println("範囲外への移動が行われた");
             return false;
         }
         
         //  距離が0もしくは2以上の移動は無効
         if( GameBoard.distance(unitLocation[id][index],new Point(x,y)) !=1){
+            System.out.print("移動する距離が0または2以上です:");
+            System.out.println("["+id+"] "+x+","+y);
             return false;
         }
 
@@ -662,6 +658,16 @@ public class GameBoard {
     }
    
     /**
+     * プレイヤーのIdを返す
+     */
+    /*
+    public int nowPlayerId(){
+        //  return (firstTeamId+GameBoard.teamId+1)%2;
+        if( whoIsPlay()==teamId ) return teamId;
+        return enemyteamId;
+    }*/
+    
+    /**
      * 次の手番へ進める
      * trueが帰るとターンの切り替えを行った
      */
@@ -702,7 +708,7 @@ public class GameBoard {
         for(int i=0; i<9; i++){ //  yについて
             for(int j=0; j<9; j++){ //  xについて
                 ArrayList<Integer> unit0 = new ArrayList<Integer>();
-                 ArrayList<Integer> unit1 = new ArrayList<Integer>();
+                ArrayList<Integer> unit1 = new ArrayList<Integer>();
                 //  同じ位置にいるものを追加
                 for(int k=0; k<4; k++){
                     if(unitLocation[0][k].x == j && unitLocation[0][k].y == i){
@@ -763,11 +769,7 @@ public class GameBoard {
     }
     
     /**
-     * 関数battleUnits
-     * 同じマスに存在するu1,u2で戦闘を行い、勝ったほうのIDを返す
-     * @param u1 id0のユニット
-     * @param u2 id1のユニット
-     * @return 勝者のID | 2:同点 | -1:エラー
+     * バトル処理
      */
     private int battleUnits(ArrayList<Integer> u1, ArrayList<Integer> u2){
         if(u1.isEmpty() && u2.isEmpty()){
@@ -812,29 +814,25 @@ public class GameBoard {
     
     
     /**
-     * 関数backUnits
-     * 指定したプレイヤーID、ユニット番号のユニットを陣地へ戻します
-     * @param player 該当するユニット番号の集合
-     * @param playerId 該当するプレイヤーID
+     * ユニットを元に戻す
      */
     private void backUnits(ArrayList<Integer> player,int playerId){
-       if(playerId==0){
-           for(Integer i : player){
+        if(playerId==0){
+            for(Integer i : player){
                this.unitLocation[0][i].x = area[0].x;
                this.unitLocation[0][i].y = area[0].y;
                //   System.out.println("ユニットを元に戻した");
-           }
+            }
                                
-       }else if(playerId==1){
-           for(Integer i : player){
+        }else if(playerId==1){
+            for(Integer i : player){
                this.unitLocation[1][i].x = area[1].x;
                this.unitLocation[1][i].y = area[1].y;
                //   System.out.println("ユニットを元に戻した");
-           }
-       }
+            }
+        }
+       
     }
-    
-    
     
     /** 次の手がどちらかを返す */
     public int whoIsPlay(){
@@ -893,13 +891,12 @@ public class GameBoard {
     }
     
     
+ //
+ // クラス定義
+ //
     
+
     
-    
- // -----------------------------------------------------------
- //     各種staticメソッド類
- //     計算するためのものです
- // -------------------------------------------------------------
     
      /** ２点の距離を計算（上下左右、斜めのどこでも１歩） */
     public static int distance(Point a,Point b){
@@ -928,8 +925,7 @@ public class GameBoard {
         if(y<0) return false;
         return true;
     }
-    
-    
+
     /** タワーと等しいかどうか判定 */
     public static boolean isTowerPos(Point p){
         for(int i=0; i<3; i++){
@@ -948,4 +944,31 @@ public class GameBoard {
         return min;      
     }
     
+    //複数で重なっている数
+    public static int multiple(int i, int id,GameBoard board) {
+        int count = 0;
+        int X = board.unitLocation[id][i].x;
+        int Y = board.unitLocation[id][i].y;
+        for (int j = 0; j < 3; j++) {
+            if (i != j && board.unitLocation[id][j].x == X && board.unitLocation[id][j].y == Y) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //最も近いユニットナンバー
+    public static int mostNear(int id1, int i, int id2,GameBoard board) {
+        int nearUnit = 0;
+        int nearLength = 10;
+        int length = 0;
+        for (int j = 0; j < 3; j++) {
+            length = GameBoard.distance(board.unitLocation[id1][i], board.unitLocation[id2][j]);
+            if (length < nearLength) {
+                nearUnit = j;
+                nearLength = length;
+            }
+        }
+        return nearUnit;
+    }
 }
