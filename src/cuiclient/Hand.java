@@ -18,4 +18,9 @@ package cuiclient;
         public boolean equals(int x,int y,int index,int id){ 
             return (this.x==x&&this.y==y&&this.index==index&&this.playerId==id);
         }
+        
+        @Override
+        public String toString() {
+            return "" + x + "," + y + " index:" + index + " id:" + playerId;
+        }
     }

@@ -7,8 +7,6 @@ package cuiclient;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import shijulearningsystem.GameBoard;
-import shijulearningsystem.Hand;
 
 /**
  * 完全に修正したMinMax

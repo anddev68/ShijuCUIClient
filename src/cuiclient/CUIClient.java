@@ -81,47 +81,20 @@ public class CUIClient {
 
     void startAI(){
         log("start AI.");
+
+        MinMax minMax = new MinMax(teamId);
+        minMax.setParams(0.943611,/* 0.868922*/ 0.0, 0.258497, 0.072230);
         
-        ShijuGameTreeNode root = new ShijuGameTreeNode(this.gameBoard, this.teamId, 0.943611, 0.868922, 0.258497, 0.072230);
-        /*
-        NegaMax negaMax = new NegaMax();
-        negaMax.execute(node,5);
-        node.sort();
-        ShijuGameNode best = (ShijuGameNode) node.getChild(0);
-        int index = best.board.lastIndex;
-        int x = best.board.lastX;
-        int y = best.board.lastY;
-       */
-        FixedMinMax minMax = new FixedMinMax();
-        minMax.execute(4,root);
-        ShijuGameTreeNode optimizedNode = null;
-        
-        /* 現在自分のターンなので高いものを選択 */
-        double max = Double.NEGATIVE_INFINITY;
-        for(Object tmp : root.getChildren()){
-            ShijuGameTreeNode node = (ShijuGameTreeNode) tmp;
-            double score = node.getScore();
-            if(max<score){
-                max = score;
-                optimizedNode = node;
-            } 
-        }
-        
-        int index = optimizedNode.board.lastIndex;
-        int x = optimizedNode.board.lastX;
-        int y = optimizedNode.board.lastY;
-        
-        optimizedNode.print();
-        
-        //  printRecursive(node,1);
-        
-        this.thread.sendPlayMessage(index, x, y);
-       
+        MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
+        Hand hand = result.optimized;
+        System.out.print(hand);
+        System.out.println(" score:"+result.score);
+        this.thread.sendPlayMessage(hand.index, hand.x, hand.y);
         
         log("end AI.");
     }
 
-    ShijuGameTreeNode optimizedNode;
+
     void search(){
         
     }
