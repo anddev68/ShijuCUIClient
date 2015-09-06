@@ -662,16 +662,6 @@ public class GameBoard {
     }
    
     /**
-     * プレイヤーのIdを返す
-     */
-    /*
-    public int nowPlayerId(){
-        //  return (firstTeamId+GameBoard.teamId+1)%2;
-        if( whoIsPlay()==teamId ) return teamId;
-        return enemyteamId;
-    }*/
-    
-    /**
      * 次の手番へ進める
      * trueが帰るとターンの切り替えを行った
      */
@@ -773,7 +763,11 @@ public class GameBoard {
     }
     
     /**
-     * バトル処理
+     * 関数battleUnits
+     * 同じマスに存在するu1,u2で戦闘を行い、勝ったほうのIDを返す
+     * @param u1 id0のユニット
+     * @param u2 id1のユニット
+     * @return 勝者のID | 2:同点 | -1:エラー
      */
     private int battleUnits(ArrayList<Integer> u1, ArrayList<Integer> u2){
         if(u1.isEmpty() && u2.isEmpty()){
@@ -818,7 +812,10 @@ public class GameBoard {
     
     
     /**
-     * ユニットを元に戻す
+     * 関数backUnits
+     * 指定したプレイヤーID、ユニット番号のユニットを陣地へ戻します
+     * @param player 該当するユニット番号の集合
+     * @param playerId 該当するプレイヤーID
      */
     private void backUnits(ArrayList<Integer> player,int playerId){
        if(playerId==0){
@@ -896,12 +893,13 @@ public class GameBoard {
     }
     
     
- //
- // クラス定義
- //
     
-
     
+    
+ // -----------------------------------------------------------
+ //     各種staticメソッド類
+ //     計算するためのものです
+ // -------------------------------------------------------------
     
      /** ２点の距離を計算（上下左右、斜めのどこでも１歩） */
     public static int distance(Point a,Point b){
