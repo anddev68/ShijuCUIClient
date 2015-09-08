@@ -653,6 +653,36 @@ public class GameBoard {
         return true;
     } 
     
+    
+    public boolean checkMove(int vecX,int vecY,int index,boolean print){
+        int id = this.whoIsPlay();
+        int x = unitLocation[id][index].x + vecX;
+        int y = unitLocation[id][index].y + vecY;
+        
+        //  範囲外参照チェック
+        if (!GameBoard.availableArea(x, y)) {
+            if(print) System.out.println("checkMove(), 範囲外への移動が行われた");
+            return false;
+        }
+        
+        //  距離が0もしくは2以上の移動は無効
+        if (GameBoard.distance(unitLocation[id][index], new Point(x, y)) != 1) {
+            if(print){
+                System.out.print("checkMove(), 移動する距離が0または2以上です:");
+                System.out.println("[" + id + "] " + x + "," + y);
+            }
+            return false;
+        }
+        
+        if (!GameBoard.formula1(vecX, vecY, x, y, id)) {
+            return false;
+        }
+        
+        return true;
+        
+    }
+    
+    
    
     /**
      * 終了条件チェック

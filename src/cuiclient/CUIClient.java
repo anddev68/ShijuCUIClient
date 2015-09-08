@@ -81,10 +81,15 @@ public class CUIClient {
     void startAI(){
         log("start AI.");
 
-        MinMax minMax = new MinMax(teamId);
-        minMax.setParams(0.686014,0.730685,0.520478,0.206630,0.265467);
+        //MinMax minMax = new MinMax(teamId);
+        //minMax.setParams(0.686014,0.730685,0.520478,0.206630,0.265467);
         
-        MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
+        //MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
+        AlphaBeta alphaBeta = new AlphaBeta(teamId);
+        alphaBeta.setParams(0.686014, 0.730685, 0.520478, 0.206630, 0.265467);
+
+        AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameBoard);
+        
         Hand hand = result.optimized;
         System.out.print(hand);
         System.out.println(" score:"+result.score);
