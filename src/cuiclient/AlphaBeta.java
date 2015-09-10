@@ -53,70 +53,41 @@ public class AlphaBeta {
         }
         
         //  子ノードを展開する
-        //  展開条件をわける
         ArrayList<NextBoard> nextBoardList = new ArrayList();
         int id = board.whoIsPlay();
         
-        //  現在STATE=12,2回目の場合は
-        //  2手指しを行う
-        //  これにより2手分をノード1個とするので、alphabetaを適用できるようにする
-        //  1手目の時点ではじかれた分は2手目を適用しない（枝狩り）
-        if(board.turnState==GameBoard.STATE_PLAY_TURN2){
-            for(int index=0; index<4; index++){
-                for(int move=0; move<8; move++){
-                    //  1手目が有効かチェック
-                    //  有効でなければ2手目のチェックをしない
-                   if( !board.checkMove(movex[move],movey[move],index,false)) continue;
-                    //  1手目が指せる場合のみ2手目に到達する
-                    for (int index2 = 0; index2 < 4; index2++) {
-                        for (int move2 = 0; move2 < 8; move2++) {
-                            //  同じ手は無視
-                            if( move==move2 && index==index2) continue;
-                            //  ボードをコピーして1個目の処理を適用
-                            int x = board.unitLocation[id][index].x;
-                            int y = board.unitLocation[id][index].y;
-                            board.unitLocation[id][index].x += movex[move];
-                            board.unitLocation[id][index].y += movey[move];
-                            //  2手目がさせる場合のみ手を有効化する
-                            if(board.checkMove(movex[move2], movey[move2], index2, false)){
-                                GameBoard tmp = new GameBoard(board);
-                                tmp.move(movex[move], movey[move], index);
-                                tmp.move(movex[move2], movey[move2], index2);
-                                nextBoardList.add(new NextBoard(tmp,new Hand(x,y,index,id)));
-                            } 
-                            //  ボードをもとに戻す
-                            board.unitLocation[id][index].x = x;
-                            board.unitLocation[id][index].y = y;    
+        //  すべての手について実現可能手を見つける
+        for (int index = 0; index < 4; index++) {
+            for (int move = 0; move < 8; move++) {
+                //  実現できない場合は手を飛ばす
+                if (!board.checkMove(movex[move], movey[move], index, false)) continue;
+                //  実現できる場合においてはコピーを作成して動かす
+                GameBoard tmp = new GameBoard(board);
+                tmp.move(movex[move], movey[move], index);
+                int x = board.unitLocation[id][index].x + movex[move];
+                int y = board.unitLocation[id][index].y + movey[move];
+                Hand hand = new Hand(x,y,index,id);
+                //  動かしたあとが異なるIDの場合はここで終了
+                if(tmp.turnState!=GameBoard.STATE_PLAY_TURN3){
+                    nextBoardList.add(new NextBoard(tmp,hand));
+                    continue;
+                }
+                //  2手連続で指す
+                for (int index2 = 0; index2 < 4; index2++) {
+                    for (int move2 = 0; move2 < 8; move2++) {
+                        if (!tmp.checkMove(movex[move2], movey[move2], index2, false)) {
+                            continue;
                         }
-                    } 
+                        //  実現できる場合はコピーして追加
+                        GameBoard tmp2 = new GameBoard(tmp);
+                        tmp2.move(movex[move2], movey[move2], index2);
+                        nextBoardList.add(new NextBoard(tmp,hand));
+                    }
                 }
+                
             }
-         //  それ以外の場合は1手指しを行う
-         //  STATE=13の場合は、初期のみしかこない
-        //  ※STATE=12のときは2回動かしていきなりSTATE=14に移行するため   
-        }else{
-            for (int j = 0; j < 4; j++) {
-                for (int i = 0; i < 8; i++) {            
-                    int x = board.unitLocation[id][j].x + movex[i];
-                    int y = board.unitLocation[id][j].y + movey[i];
-
-                    //  範囲外への移動の場合は有効手ではない
-                    if (!GameBoard.availableArea(x, y)) continue;
-
-                    //  移動範囲は定跡により縛る
-                    if (!GameBoard.formula1(movex[i], movey[i], x, y, id)) continue;
-
-                    //  ボードをディープコピーして動かす
-                    GameBoard tmp = new GameBoard(board);
-                    if (tmp.movePos(x, y, j)) {
-                        //  候補に追加
-                        nextBoardList.add(new NextBoard(tmp, new Hand(x, y, j, board.whoIsPlay())));
-                    } 
-                    
-                }
-            }
-        }
-        
+         }
+       
 
         if(nextBoardList.isEmpty()){
             System.out.println("展開するノードがありません");
@@ -124,33 +95,37 @@ public class AlphaBeta {
             return new ReturnValue(score,null);
         }
         //System.out.println("expanded: "+nextBoardList.size());
-             
+        ReturnValue alpha2 = new ReturnValue();
+        alpha2.score = alpha.score;
+        ReturnValue beta2 = new ReturnValue();
+        beta2.score = beta.score;
+        
         if( board.whoIsPlay() == this.playerTeamId ){
             for (NextBoard i : nextBoardList) {
                 ReturnValue result = alphabeta(depth - 1, i.board, alpha, beta);    
-                if(alpha.score  < result.score){    //  大きいほうを選択する
-                    alpha = result;
-                    alpha.optimized = i.hand;
+                if(alpha2.score  < result.score){    //  大きいほうを選択する
+                    alpha2.score = result.score;
+                    alpha2.optimized = i.hand;
                 }  
-                if(alpha.score>=beta.score){
-                    beta.optimized = i.hand;
-                    return beta;    //  カット
+                if(alpha2.score>=beta2.score){
+                    beta2.optimized = i.hand;
+                    return beta2;    //  カット
                 }
             }
-            return alpha;
+            return alpha2;
         }else{
             for (NextBoard i : nextBoardList) {
                 ReturnValue result = alphabeta(depth - 1, i.board, alpha, beta);
-                if(result.score < beta.score){
-                    beta = result;  //  小さいほうを選択する
-                    beta.optimized = i.hand;
+                if(result.score < beta2.score){
+                    beta2 = result;  //  小さいほうを選択する
+                    beta2.optimized = i.hand;
                 } 
-                if (alpha.score >= beta.score) {
-                    alpha.optimized = i.hand;
-                    return alpha;   //  カット
+                if (alpha2.score >= beta2.score) {
+                    alpha2.optimized = i.hand;
+                    return alpha2;   //  カット
                 }
             }            
-            return beta;
+            return beta2;
         }
 
     }
@@ -242,6 +217,7 @@ public class AlphaBeta {
     public class ReturnValue{
         public double score;
         public Hand optimized;
+        public ReturnValue(){}
         public ReturnValue(double score,Hand hand){
             this.score = score;
             this.optimized = hand;
