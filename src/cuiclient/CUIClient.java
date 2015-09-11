@@ -8,6 +8,10 @@ package cuiclient;
 import cuiclient.connection.LoginReceiver;
 import cuiclient.connection.PlayReceiver;
 import cuiclient.connection.ServerThread;
+import cuiclient.game.PointController;
+import cuiclient.game.TurnCounter;
+import cuiclient.game.GameBoard;
+import cuiclient.game.GameMaster;
 import java.util.Scanner;
 
 
@@ -19,7 +23,7 @@ import java.util.Scanner;
 public class CUIClient {
 
     ServerThread thread;
-    GameBoard gameBoard;
+    GameMaster gameMaster;
     
     int teamId;
     
@@ -130,17 +134,12 @@ public class CUIClient {
      * Playに関するコマンドをサーバから受信したときの処理です
      */
     private class MyPlayReceiver implements PlayReceiver{
-        //  内部ターンカウント [0-3]
-        //  敵が1手打つか自分が1手打つごとに1こずつ増やし、
-        //  4になった時点で0に戻して先行後攻入れ替えを行います
-        int turn = 0;
-        int firstTeamId = 0;    //  先行プレイヤーは必ず0です
             
         //  文字を送信したのでOKを待機する
         boolean waitOK;
         
         public MyPlayReceiver(){
-            gameBoard = new GameBoard();
+            gameMaster = new GameMaster();
         }
         
         @Override
@@ -149,8 +148,7 @@ public class CUIClient {
 
         @Override
         public void onReceiveUnit(int T, int N, int X, int Y) {
-            gameBoard.unitLocation[T][N].x = X;
-            gameBoard.unitLocation[T][N].y = Y;
+            gameMaster.setUnitLocation(X, Y, N, T);
         }
 
         @Override
@@ -161,23 +159,18 @@ public class CUIClient {
 
         @Override
         public void onReceiveTower(int N, int T) {
-            gameBoard.towerHold[N] = T;
+            gameMaster.setTower(N, T);
         }
 
         @Override
         public void onReceiveScore(int T, int S) {
-            gameBoard.teamPoint[T] = S;
+            gameMaster.setPoint(T, S);
         }
 
         @Override
         public void onReceiveLineEnd() {
             //  ボードのターンを変更する
-            gameBoard.turnState = GameBoard.STATE_PLAY_TURN1 + turn;
-            gameBoard.firstTeamId = firstTeamId;
-            
-            //  ボードが更新されたのでAIを使います
-            waitOK = true;
-            startAI();
+            gameMaster.nextPhase();
         }
 
         @Override
@@ -185,7 +178,7 @@ public class CUIClient {
             if(waitOK){ //  PlayMessageを送ったあとの待機状態かどうか判定
                 waitOK = false;
                 //  次のターンへ進めます
-                nextTurn();
+                
             }
         }
 
@@ -196,21 +189,11 @@ public class CUIClient {
         @Override
         public void onReceivePlayed() {
             //  次のターンへ進めます
-            nextTurn();
+            gameMaster.nextPhase();
         }
+      
         
-        void nextTurn(){
-            log("nextTurn() "+turn);
-            turn++;
-            if(turn>=4){
-                turn = 0;
-                firstTeamId = (firstTeamId==0)? 1: 0;
-            }
-        }
-        
-        private void init(){
-            
-        }
+
         
     }
     
