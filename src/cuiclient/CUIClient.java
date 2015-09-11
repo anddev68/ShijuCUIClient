@@ -34,40 +34,40 @@ public class CUIClient {
     void start(){
         Scanner s = new Scanner(System.in);
         
-        //  名前を入力
+        //  名前を�?��?
         System.out.println("Input your name (English only).");
         System.out.println("If press Enter,use default name.");
         String name = s.nextLine();
         
-        //  サーバを入力
+        //  サーバを入�?
         System.out.println("Input server adress.");
         System.out.println("If press Enter,use default name,'localhost'");
         String server = s.nextLine();
         
-        //  ポートを入力
+        //  ポ�?�トを入�?
         /*
         System.out.println("Input port number");
         System.out.println("If press Enter,use default portm13306");
         int port = s.nextInt();
         */
         
-        //  サーバ接続用のスレッドを開始する
+        //  サーバ接続用のスレ�?ドを開始す�?
         thread = new ServerThread(name.isEmpty()?"YASUDAKEN":name, new MyPlayReceiver(),new MyLoginReceiver());
        
-         //  サーバーに接続する
+         //  サーバ�?�に接続す�?
          if( !thread.connectServer(server.isEmpty()?"localhost":server,13306) ) return;
          log("connected server.");
        
-         // スレッドを開始する
+         // スレ�?ドを開始す�?
          thread.start();
          log("thread start.");
         
          
-         // 以後すべてのやりとりはリシーバーを介して行います
+         // 以後すべての�?りとり�?�リシーバ�?�を介して行いま�?
          
          
          
-        //  メインスレッドは空ループ
+        //  メインスレ�?ド�?�空ルー�?
          while(true){
              
          }
@@ -89,12 +89,14 @@ public class CUIClient {
         AlphaBeta alphaBeta = new AlphaBeta(teamId);
         alphaBeta.setParams(0.686014, 0.730685, 0.520478, 0.206630, 0.265467);
 
-        AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameBoard);
+        //AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameBoard);
         
+        /*
         Hand hand = result.optimized;
         System.out.print(hand);
         System.out.println(" score:"+result.score);
         this.thread.sendPlayMessage(hand.index, hand.x, hand.y);
+        */
         
         log("end AI.");
     }
@@ -109,7 +111,7 @@ public class CUIClient {
     
     /**
      * class MyLoginReceiver
-     * Loginに関するコマンドをサーバから受信したときの処理です
+     * Loginに関するコマンドをサーバから受信したとき�?�処�?で�?
      */
     private class MyLoginReceiver implements LoginReceiver{
 
@@ -128,11 +130,11 @@ public class CUIClient {
     
     /**
      * class MyPlayReceiver
-     * Playに関するコマンドをサーバから受信したときの処理です
+     * Playに関するコマンドをサーバから受信したとき�?�処�?で�?
      */
     private class MyPlayReceiver implements PlayReceiver{
             
-        //  文字を送信したのでOKを待機する
+        //  �?字を送信したのでOKを�?機す�?
         boolean waitOK;
         
         public MyPlayReceiver(){
@@ -150,8 +152,8 @@ public class CUIClient {
 
         @Override
         public void onReceiveMultiLine() {
-            //  ここでゲームボードを初期化する
-            //  全部呼ばれるから初期化する必要あるのか微妙
+            //  ここでゲー�?ボ�?�ドを初期化す�?
+            //  全部呼ばれるから初期化する�?要ある�?�か微�?
         }
 
         @Override
@@ -166,16 +168,16 @@ public class CUIClient {
 
         @Override
         public void onReceiveLineEnd() {
-            //  ボードが更新されたのでAIを使います
+            //  ボ�?�ドが更新された�?�でAIを使�?ま�?
             waitOK = true;
             startAI();
         }
 
         @Override
         public void onReceiveOK() {
-            if(waitOK){ //  PlayMessageを送ったあとの待機状態かどうか判定
+            if(waitOK){ //  PlayMessageを�?�ったあとの�?機状態かど�?か判�?
                 waitOK = false;
-                //  次のターンへ進めます
+                //  次のターンへ進めま�?
                 gameMaster.nextPhase();
             }
         }
@@ -186,7 +188,7 @@ public class CUIClient {
 
         @Override
         public void onReceivePlayed() {
-            //  次のターンへ進めます
+            //  次のターンへ進めま�?
             gameMaster.nextPhase();
         }
       
