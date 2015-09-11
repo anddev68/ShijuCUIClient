@@ -27,6 +27,17 @@ public class GameMaster implements TurnCounter.Callback{
         
     }
     
+    
+    /**
+     * 盤面の総合評価
+     */
+    public double evaluate(){
+        return 0;
+    }
+    
+    
+    
+    
     //  ----------------------------------------------------
     //  以下ラッパー（委譲クラスです）
     //  ------------------------------------------------------

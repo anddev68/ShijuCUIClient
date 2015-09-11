@@ -62,6 +62,7 @@ public class TurnCounter {
             this.callback.onChangeTurn();
             turnState=STATE_PLAY_TURN1;
             this.totalTurn++;
+            this.firstPlayerId = this.firstPlayerId == 0 ? 1 : 0;   //  先後入れ替え
         }
     }
     
