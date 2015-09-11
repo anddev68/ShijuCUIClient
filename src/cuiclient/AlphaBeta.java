@@ -7,6 +7,20 @@ package cuiclient;
 
 import java.awt.Point;
 import java.util.ArrayList;
+class unit{
+    public int x;
+    public int y;
+    public int move;
+    public int index;
+    
+    public unit(){}
+    public unit(int x,int y,int index,int move){
+        this.x = x;
+        this.y = y;
+        this.index = index;
+        this.move = move;
+    }
+}
 
 /**
  * 完全に修正したMinMax
@@ -55,17 +69,27 @@ public class AlphaBeta {
         //  子ノードを展開する
         ArrayList<NextBoard> nextBoardList = new ArrayList();
         int id = board.whoIsPlay();
-        
+        int Eid =  id == 0 ? 1 : 0;
+        //list : 戦闘が起きない手(後回し)
+        ArrayList<unit> list= new ArrayList();
+        ArrayList<unit> list2= new ArrayList();
         //  すべての手について実現可能手を見つける
         for (int index = 0; index < 4; index++) {
             for (int move = 0; move < 8; move++) {
                 //  実現できない場合は手を飛ばす
                 if (!board.checkMove(movex[move], movey[move], index, false)) continue;
+                int x = board.unitLocation[id][index].x + movex[move];
+                int y = board.unitLocation[id][index].y + movey[move];
+                
+                // バトルが発生しない手は後回し
+                if (!board.enemySearch(x,y,Eid)){
+                    unit  a = new unit(x,y,index,move); 
+                    list.add(a);
+                    continue;
+                }
                 //  実現できる場合においてはコピーを作成して動かす
                 GameBoard tmp = new GameBoard(board);
                 tmp.move(movex[move], movey[move], index);
-                int x = board.unitLocation[id][index].x + movex[move];
-                int y = board.unitLocation[id][index].y + movey[move];
                 Hand hand = new Hand(x,y,index,id);
                 //  動かしたあとが異なるIDの場合はここで終了
                 if(tmp.turnState!=GameBoard.STATE_PLAY_TURN3){
@@ -87,7 +111,53 @@ public class AlphaBeta {
                 
             }
          }
-       
+        
+        
+        //戦闘が発生しない手
+        for(int i=0;i<list.size();i++){
+            int x = list.get(i).x;
+            int y = list.get(i).y;
+            int index = list.get(i).index;
+            int move = list.get(i).move;
+            GameBoard tmp = new GameBoard(board);
+            tmp.move(movex[move], movey[move], index);
+            Hand hand = new Hand(x,y,index,id);
+            //  動かしたあとが異なるIDの場合はここで終了
+            if(tmp.turnState!=GameBoard.STATE_PLAY_TURN3){
+                nextBoardList.add(new NextBoard(tmp,hand));
+                continue;
+            }
+            //  2手連続で指す
+            for (int index2 = 0; index2 < 4; index2++) {
+                for (int move2 = 0; move2 < 8; move2++) {
+                    if (!tmp.checkMove(movex[move2], movey[move2], index2, false)) {
+                        continue;
+                    }
+                    int x2 = board.unitLocation[id][index2].x + movex[move2];
+                    int y2 = board.unitLocation[id][index2].y + movey[move2];
+                        // バトルが発生しない手は後回し
+                    if (!board.enemySearch(x,y,Eid)){
+                        unit  a = new unit(x2,y2,index2,move2); 
+                        list2.add(a);
+                        continue;
+                    }
+                    //  実現できる場合はコピーして追加
+                    GameBoard tmp2 = new GameBoard(tmp);
+                    tmp2.move(movex[move2], movey[move2], index2);
+                    nextBoardList.add(new NextBoard(tmp,hand));
+                }
+            }
+            // 2手目の戦闘が発生しない手
+            for(int j=0;j<list2.size();j++){
+                int x2 = list2.get(i).x;
+                int y2 = list2.get(i).y;
+                int index2 = list2.get(i).index;
+                int move2 = list.get(i).move;
+                GameBoard tmp2 = new GameBoard(tmp);
+                tmp2.move(movex[move2], movey[move2], index2);
+                nextBoardList.add(new NextBoard(tmp,hand));
+            }
+        }
 
         if(nextBoardList.isEmpty()){
             System.out.println("展開するノードがありません");

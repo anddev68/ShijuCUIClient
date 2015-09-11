@@ -375,6 +375,17 @@ public class GameBoard {
      * 
      */
     
+    /**
+     * 定石6
+     * 2連続移動の際の枝刈り
+     * 
+     */
+    private static boolean formula6(Point[][] unitLocation,int index,int pId,int turnState,int firstPlayerId){
+        
+        
+        //  その手は無効
+        return false;
+    }
     
  //   
  //
@@ -1048,8 +1059,16 @@ public class GameBoard {
         }
         return nearUnit;
     }
-
-
+    /**
+     * 関数enemySearch
+     */
+    public boolean enemySearch(int x,int y,int Eid){
+        Point i=new Point(x,y);
+        for(int index=0;index<4;index++)
+            if(distance(i,unitLocation[Eid][index])==0)
+                return true;
+        return false;
+    }
     /**
      * 関数peripheral
      * 指定したタワーと、ユニット4体の距離を点数化する
