@@ -8,9 +8,6 @@ package cuiclient;
 import cuiclient.connection.LoginReceiver;
 import cuiclient.connection.PlayReceiver;
 import cuiclient.connection.ServerThread;
-import cuiclient.game.PointController;
-import cuiclient.game.TurnCounter;
-import cuiclient.game.GameBoard;
 import cuiclient.game.GameMaster;
 import java.util.Scanner;
 
@@ -169,8 +166,9 @@ public class CUIClient {
 
         @Override
         public void onReceiveLineEnd() {
-            //  ボードのターンを変更する
-            gameMaster.nextPhase();
+            //  ボードが更新されたのでAIを使います
+            waitOK = true;
+            startAI();
         }
 
         @Override
@@ -178,7 +176,7 @@ public class CUIClient {
             if(waitOK){ //  PlayMessageを送ったあとの待機状態かどうか判定
                 waitOK = false;
                 //  次のターンへ進めます
-                
+                gameMaster.nextPhase();
             }
         }
 
