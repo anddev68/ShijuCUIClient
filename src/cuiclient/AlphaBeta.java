@@ -179,6 +179,7 @@ public class AlphaBeta {
                 }  
                 if(alpha2.score>=beta2.score){
                     beta2.optimized = i.hand;
+                    System.out.println("cutした");
                     return beta2;    //  カット
                 }
             }
@@ -192,6 +193,7 @@ public class AlphaBeta {
                 } 
                 if (alpha2.score >= beta2.score) {
                     alpha2.optimized = i.hand;
+                    System.out.println("cutした");
                     return alpha2;   //  カット
                 }
             }            
