@@ -208,17 +208,14 @@ public class CUIClient {
             }
         }
         
-    }
-    
-    
-    /**
-     * ターン管理用のクラスです
-     * AIに必要なため一時的に作成しておきます
-     * あとで必ず設計しなおしてください
-     */
-    private class TurnCounter{
+        private void init(){
+            
+        }
         
     }
+    
+    
+
     
     
     
