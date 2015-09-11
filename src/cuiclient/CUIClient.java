@@ -88,7 +88,7 @@ public class CUIClient {
         AlphaBeta alphaBeta = new AlphaBeta(teamId);
         alphaBeta.setParams(0.686014, 0.730685, 0.520478, 0.206630, 0.265467);
 
-        AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameBoard);
+        AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameBoard);
         
         Hand hand = result.optimized;
         System.out.print(hand);
