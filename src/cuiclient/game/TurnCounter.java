@@ -47,9 +47,6 @@ public class TurnCounter {
         
     }
     
-    public TurnCounter deepCopy(){
-        return null;
-    }
     
     /**
      * 次のフェーズへ進めます
@@ -66,6 +63,27 @@ public class TurnCounter {
         }
     }
     
+    
+    /**
+     * 現在のターンステートを返す
+     */
+    public int getTurnState(){
+        return this.turnState;
+    }
+    
+    /** 次の手がどちらかを返す */
+    public int whoIsPlay(){
+        if(this.turnState == STATE_PLAY_TURN1){
+            return this.firstPlayerId;
+        } else if(this.turnState == STATE_PLAY_TURN2){
+            return (this.firstPlayerId+1)%2;
+        } else if(this.turnState == STATE_PLAY_TURN3){
+            return (this.firstPlayerId+1)%2;
+        } else if(this.turnState == STATE_PLAY_TURN4){
+            return this.firstPlayerId;
+        }
+        return -1;
+    }
     
     
 }

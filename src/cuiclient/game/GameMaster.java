@@ -20,22 +20,49 @@ public class GameMaster implements TurnCounter.Callback{
         pointController = new PointController();
         turnCounter = new TurnCounter(this);
     }
+    
+    public GameMaster(GameMaster org){
+        this.turnCounter = new TurnCounter(org.turnCounter);
+        this.gameBoard = new GameBoard(org.gameBoard);
+        this.pointController = new PointController(org.pointController);
+    }
 
     
     @Override
     public void onChangeTurn() {
+        //  戦闘処理を行う
         
+        //  戦闘を終えたら点数加算処理を行う
     }
     
     
     /**
      * 盤面の総合評価
+     * プレイヤーIDを入れると、そのプレイヤーに対しての評価を返す
      */
     public double evaluate(){
         return 0;
     }
     
+    /**
+     * 実際に動かす
+     * @return trure 成功 false 失敗
+     */
+    public boolean  move(int x,int y,int index){
+        return false;
+    }
     
+    /**
+     * 動かせるかどうかチェックする
+     * 実際に動かすことはしない
+     * @param x 
+     * @param y
+     * @param index
+     * @return true 成功 false 失敗
+     */
+    public boolean checkMove(int x,int y,int index){
+        return false;
+    }
     
     
     //  ----------------------------------------------------
@@ -45,6 +72,6 @@ public class GameMaster implements TurnCounter.Callback{
     public void setPoint(int id,int p){ pointController.setPoint(id, p); }
     public void setTower(int index,int id){ gameBoard.setTower(index, id); }
     public void setUnitLocation(int x,int y,int index,int id){ gameBoard.setUnitLocation(x, y, index, id); }
-    
-    
+    public int getTurnState(){ return turnCounter.getTurnState(); }
+    public int whoIsPlay(){ return turnCounter.whoIsPlay(); }
 }

@@ -26,6 +26,18 @@ public class GameBoard {
         }
     }
     
+    public GameBoard(GameBoard board){
+
+        unitLocation = new Point[2][4];
+        for (int i = 0; i < unitLocation.length; i++) {
+            for (int j = 0; j < unitLocation[i].length; j++) {
+                unitLocation[i][j] = new Point();
+                unitLocation[i][j].x = board.unitLocation[i][j].x;
+                unitLocation[i][j].y = board.unitLocation[i][j].y;
+            }
+        }
+    }
+    
     public void setUnitLocation(int x,int y,int index,int id){
         this.unitLocation[id][index].x = x;
         this.unitLocation[id][index].y = y;
