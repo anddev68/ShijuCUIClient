@@ -42,7 +42,7 @@ public class AlphaBeta {
     private double alphabeta(int depth,GameMaster master,double alpha,double beta){
         //  一番最下層までもぐったら静的評価します
         if(depth==0){
-            double score = master.evaluate();
+            double score = master.evaluate(id);
             return score;
         }
         
@@ -53,6 +53,10 @@ public class AlphaBeta {
         inQueue.add(master);  //  初期ノード追加
         expand();
         
+        //  展開するノードがない
+        if( outQueue.isEmpty() ){
+            return master.evaluate(id);
+        }
         
         //  展開したノードを用いて評価を再帰的に行う
         VirtualGameMaster tmp;

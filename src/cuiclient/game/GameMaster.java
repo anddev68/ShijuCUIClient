@@ -40,7 +40,7 @@ public class GameMaster implements TurnCounter.Callback{
      * 盤面の総合評価
      * プレイヤーIDを入れると、そのプレイヤーに対しての評価を返す
      */
-    public double evaluate(){
+    public double evaluate(int id){
         return 0;
     }
     
