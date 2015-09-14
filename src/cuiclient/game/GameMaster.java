@@ -46,6 +46,9 @@ public class GameMaster implements TurnCounter.Callback{
     
     /**
      * 実際に動かす
+     * @param x x軸に動かすマスの数
+     * @param y y軸に動かすマスの数
+     * @param index 
      * @return trure 成功 false 失敗
      */
     public boolean  move(int x,int y,int index){
@@ -55,7 +58,7 @@ public class GameMaster implements TurnCounter.Callback{
     /**
      * 動かせるかどうかチェックする
      * 実際に動かすことはしない
-     * @param x 
+     * @param x 動かすマスの数
      * @param y
      * @param index
      * @return true 成功 false 失敗
