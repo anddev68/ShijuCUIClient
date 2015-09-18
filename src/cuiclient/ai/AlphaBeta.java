@@ -33,9 +33,9 @@ public class AlphaBeta {
     
     public ReturnValue alphabeta(int depth,GameMaster master){
         optimizedHandList = new Hand[depth];
-        for(int i=0; i<depth; i++) optimizedHandList[i] = new Hand(-1,-1,-1,-1);
+        for(int i=0; i<optimizedHandList.length; i++) optimizedHandList[i] = new Hand(-1,-1,-1,-1);
         double score = alphabeta(depth,master,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
-        return new ReturnValue( score,optimizedHandList[depth] );
+        return new ReturnValue( score,optimizedHandList[depth-1] );
     }
    
     

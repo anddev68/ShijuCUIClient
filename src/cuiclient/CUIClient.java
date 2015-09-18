@@ -86,17 +86,17 @@ public class CUIClient {
         //minMax.setParams(0.686014,0.730685,0.520478,0.206630,0.265467);
         
         //MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
-        AlphaBeta alphaBeta = new AlphaBeta(teamId);
-        alphaBeta.setParams(0.686014, 0.730685, 0.520478, 0.206630, 0.265467);
+        cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
+        //alphaBeta.setParams(0.686014, 0.730685, 0.520478, 0.206630, 0.265467);
 
-        //AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameBoard);
+        cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameMaster);
         
-        /*
+        
         Hand hand = result.optimized;
         System.out.print(hand);
         System.out.println(" score:"+result.score);
         this.thread.sendPlayMessage(hand.index, hand.x, hand.y);
-        */
+        
         
         log("end AI.");
     }
