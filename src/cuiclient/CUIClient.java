@@ -8,6 +8,7 @@ package cuiclient;
 import cuiclient.connection.LoginReceiver;
 import cuiclient.connection.PlayReceiver;
 import cuiclient.connection.ServerThread;
+import cuiclient.game.GameMaster;
 import java.util.Scanner;
 
 
@@ -19,7 +20,7 @@ import java.util.Scanner;
 public class CUIClient {
 
     ServerThread thread;
-    GameBoard gameBoard;
+    GameMaster gameMaster;
     
     int teamId;
     
@@ -33,40 +34,40 @@ public class CUIClient {
     void start(){
         Scanner s = new Scanner(System.in);
         
-        //  名前を入力
+        //  名前を�?��?
         System.out.println("Input your name (English only).");
         System.out.println("If press Enter,use default name.");
         String name = s.nextLine();
         
-        //  サーバを入力
+        //  サーバを入�?
         System.out.println("Input server adress.");
         System.out.println("If press Enter,use default name,'localhost'");
         String server = s.nextLine();
         
-        //  ポートを入力
+        //  ポ�?�トを入�?
         /*
         System.out.println("Input port number");
         System.out.println("If press Enter,use default portm13306");
         int port = s.nextInt();
         */
         
-        //  サーバ接続用のスレッドを開始する
+        //  サーバ接続用のスレ�?ドを開始す�?
         thread = new ServerThread(name.isEmpty()?"YASUDAKEN":name, new MyPlayReceiver(),new MyLoginReceiver());
        
-         //  サーバーに接続する
+         //  サーバ�?�に接続す�?
          if( !thread.connectServer(server.isEmpty()?"localhost":server,13306) ) return;
          log("connected server.");
        
-         // スレッドを開始する
+         // スレ�?ドを開始す�?
          thread.start();
          log("thread start.");
         
          
-         // 以後すべてのやりとりはリシーバーを介して行います
+         // 以後すべての�?りとり�?�リシーバ�?�を介して行いま�?
          
          
          
-        //  メインスレッドは空ループ
+        //  メインスレ�?ド�?�空ルー�?
          while(true){
              
          }
@@ -88,12 +89,14 @@ public class CUIClient {
         AlphaBeta alphaBeta = new AlphaBeta(teamId);
         alphaBeta.setParams(0.686014, 0.730685, 0.520478, 0.206630, 0.265467);
 
-        AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameBoard);
+        //AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameBoard);
         
+        /*
         Hand hand = result.optimized;
         System.out.print(hand);
         System.out.println(" score:"+result.score);
         this.thread.sendPlayMessage(hand.index, hand.x, hand.y);
+        */
         
         log("end AI.");
     }
@@ -108,7 +111,7 @@ public class CUIClient {
     
     /**
      * class MyLoginReceiver
-     * Loginに関するコマンドをサーバから受信したときの処理です
+     * Loginに関するコマンドをサーバから受信したとき�?�処�?で�?
      */
     private class MyLoginReceiver implements LoginReceiver{
 
@@ -127,20 +130,15 @@ public class CUIClient {
     
     /**
      * class MyPlayReceiver
-     * Playに関するコマンドをサーバから受信したときの処理です
+     * Playに関するコマンドをサーバから受信したとき�?�処�?で�?
      */
     private class MyPlayReceiver implements PlayReceiver{
-        //  内部ターンカウント [0-3]
-        //  敵が1手打つか自分が1手打つごとに1こずつ増やし、
-        //  4になった時点で0に戻して先行後攻入れ替えを行います
-        int turn = 0;
-        int firstTeamId = 0;    //  先行プレイヤーは必ず0です
             
-        //  文字を送信したのでOKを待機する
+        //  �?字を送信したのでOKを�?機す�?
         boolean waitOK;
         
         public MyPlayReceiver(){
-            gameBoard = new GameBoard();
+            gameMaster = new GameMaster();
         }
         
         @Override
@@ -149,43 +147,38 @@ public class CUIClient {
 
         @Override
         public void onReceiveUnit(int T, int N, int X, int Y) {
-            gameBoard.unitLocation[T][N].x = X;
-            gameBoard.unitLocation[T][N].y = Y;
+            gameMaster.setUnitLocation(X, Y, N, T);
         }
 
         @Override
         public void onReceiveMultiLine() {
-            //  ここでゲームボードを初期化する
-            //  全部呼ばれるから初期化する必要あるのか微妙
+            //  ここでゲー�?ボ�?�ドを初期化す�?
+            //  全部呼ばれるから初期化する�?要ある�?�か微�?
         }
 
         @Override
         public void onReceiveTower(int N, int T) {
-            gameBoard.towerHold[N] = T;
+            gameMaster.setTower(N, T);
         }
 
         @Override
         public void onReceiveScore(int T, int S) {
-            gameBoard.teamPoint[T] = S;
+            gameMaster.setPoint(T, S);
         }
 
         @Override
         public void onReceiveLineEnd() {
-            //  ボードのターンを変更する
-            gameBoard.turnState = GameBoard.STATE_PLAY_TURN1 + turn;
-            gameBoard.firstTeamId = firstTeamId;
-            
-            //  ボードが更新されたのでAIを使います
+            //  ボ�?�ドが更新された�?�でAIを使�?ま�?
             waitOK = true;
             startAI();
         }
 
         @Override
         public void onReceiveOK() {
-            if(waitOK){ //  PlayMessageを送ったあとの待機状態かどうか判定
+            if(waitOK){ //  PlayMessageを�?�ったあとの�?機状態かど�?か判�?
                 waitOK = false;
-                //  次のターンへ進めます
-                nextTurn();
+                //  次のターンへ進めま�?
+                gameMaster.nextPhase();
             }
         }
 
@@ -195,30 +188,17 @@ public class CUIClient {
 
         @Override
         public void onReceivePlayed() {
-            //  次のターンへ進めます
-            nextTurn();
+            //  次のターンへ進めま�?
+            gameMaster.nextPhase();
         }
+      
         
-        void nextTurn(){
-            log("nextTurn() "+turn);
-            turn++;
-            if(turn>=4){
-                turn = 0;
-                firstTeamId = (firstTeamId==0)? 1: 0;
-            }
-        }
+
         
     }
     
     
-    /**
-     * ターン管理用のクラスです
-     * AIに必要なため一時的に作成しておきます
-     * あとで必ず設計しなおしてください
-     */
-    private class TurnCounter{
-        
-    }
+
     
     
     
