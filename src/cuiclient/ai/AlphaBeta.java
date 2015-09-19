@@ -12,6 +12,7 @@ import cuiclient.game.TurnCounter;
 import cuiclient.game.VirtualGameMaster;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 
 
@@ -65,7 +66,7 @@ public class AlphaBeta {
      *      AlphaBetaのAlpha値です
      * @param beta
      *      AlphaBetaのBeta値です
-     * @return 
+     * @return 評価値
      */
     private double alphabeta(int depth,GameMaster master,double alpha,double beta){
         //  一番最下層までもぐったら静的評価します
@@ -77,7 +78,7 @@ public class AlphaBeta {
         //  ノードの展開を行う
         //  優先順位付きで実現可能手をキューに入れる
         LinkedList<GameMaster> inQueue = new LinkedList();
-        LinkedList<VirtualGameMaster>  outQueue = new LinkedList();
+        PriorityQueue<VirtualGameMaster>  outQueue = new PriorityQueue<>();
         inQueue.add(master);  //  初期ノード追加
         expand(inQueue,outQueue);
         
@@ -92,7 +93,7 @@ public class AlphaBeta {
         
         if(master.whoIsPlay()==this.id){
             while(!outQueue.isEmpty()){
-                tmp = outQueue.removeFirst();
+                tmp = outQueue.poll();
                 score = alphabeta(depth - 1, tmp, alpha, beta);    //  再帰した結果を使って結果とする
                 if(score > alpha){ //  alphaの高いやつを選択
                     alpha = score;  //  alphaを更新
@@ -105,7 +106,7 @@ public class AlphaBeta {
             return alpha;
         }else{  //  敵のターン
             while (!outQueue.isEmpty()) {
-                tmp = outQueue.removeFirst();
+                tmp = outQueue.poll();
                 score = alphabeta(depth-1,tmp,alpha,beta);  //  再帰呼び出し
                 if(score<beta){
                     beta = score;   //  ベータ値更新
@@ -130,9 +131,12 @@ public class AlphaBeta {
      * @param outQueue 展開終了（評価待ち行列）
      *      Not NULL,必ずインスタンスを生成しておくこと
      *      このQueueに展開処理を終えたものを順番に入れていきます
-     * 
+     *      優先度をつけてあります
+     * @since 1.0.1
+     *      展開時に優先付けを行い、AlphaBetaの精度を高めた。
+     *      優先順位はバトルがおきるか否かで判断する
      */
-    private void expand(LinkedList<GameMaster> inQueue,LinkedList<VirtualGameMaster> outQueue){
+    private void expand(LinkedList<GameMaster> inQueue,PriorityQueue<VirtualGameMaster> outQueue){
         
         //  乱数によって動かす方向を決定するための配列
         final int[] movex = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -147,11 +151,17 @@ public class AlphaBeta {
                     //  実現できない場合はスルー
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
                     
-
-                    
                     //  実現できる場合はコピーを作成
                     Hand hand = tmp.createHand(movex[move], movey[move], index);
                     VirtualGameMaster copy = new VirtualGameMaster(tmp,hand);
+                    
+                    //  今指した手について、バトルがおきるかどうか判断
+                    //  バトルがおきるのであれば優先度を高くする
+                    //  @since 1.0.1
+                    int eid = copy.whoIsPlay() == 0 ? 1 : 0;    //  copyの盤面の人からみた敵のID
+                    if(copy.existsUnit(hand.x, hand.y, eid)){   //  動かした場所に敵ユニットがある＝戦闘＝優先度高い
+                        copy.setPriority(1);
+                    }
                     
                     //  コピーを動かす
                     boolean result = copy.movePos(hand.x,hand.y,hand.index);
@@ -173,6 +183,11 @@ public class AlphaBeta {
         }
         
     }
+    
+    
+
+    
+    
     
     
     

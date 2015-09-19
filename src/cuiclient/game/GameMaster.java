@@ -5,6 +5,7 @@
  */
 package cuiclient.game;
 
+import static cuiclient.GameBoard.distance;
 import cuiclient.Hand;
 import static cuiclient.game.GameBoard.towerPos;
 import static cuiclient.game.GameBoard.area;
@@ -55,7 +56,70 @@ public class GameMaster implements TurnCounter.Callback{
      */
     public double evaluate(int id,double... k){
         int eId = (id==0) ? 1: 0;
-        return pointController.getPoint(id) - pointController.getPoint(eId) + 50;
+        double score = 0.0;
+
+        //  点数さによる評価
+        //  バイアスをかけておかないとマイナスになる可能性がある 
+        score += k[0] * (pointController.getPoint(id) -pointController.getPoint(eId) + 50);
+
+        //  自分のユニットとタワーまでの距離
+        //  2015/09/03変更
+        //  平均値が小さく、分散が小さいものを選択する
+        int eDist = 0;
+        int pDist = 0;
+        for (int i = 0; i < 4; i++) {
+            pDist += Math.pow(cuiclient.GameBoard.distanceTower(gameBoard.unitLocation[id][i]), 2);  //  距離が多くなればなるほど点数が下がる
+            eDist += Math.pow(cuiclient.GameBoard.distanceTower(gameBoard.unitLocation[eId][i]), 2);  //  
+        }
+        score += k[1] * (-pDist + eDist + 100);
+
+        //  保持状態
+        int tower = 0;
+        for (int i = 0; i < 3; i++) {
+            if (gameBoard.tower[i] == id) {
+                tower++;
+            } else {
+                tower--;
+            }
+        }
+        score += k[2] * (tower + 3);
+
+        //  相性評価
+        /*
+        int length = 0;
+        for (int i = 0; i < 3; i++) {     //全ての駒に対して
+            int MNE = board.mostNear(playerTeamId, i, enemyTeamId);  //MNE = mostNearEnemy
+            Point P = board.unitLocation[playerTeamId][i];
+            Point E = board.unitLocation[enemyTeamId][MNE];
+
+            // (相手の数-自分の数) * 距離 の分だけ変化
+            if ((i != 3 && i == MNE + 1) || (i == 3 && MNE == 0)) //勝てる時
+            {
+                length += (board.multiple(i, playerTeamId) - board.multiple(MNE, enemyTeamId)) * cuiclient.GameBoard.distance(P, E);
+            } else if ((i != 0 && i == MNE - 1) || (i == 0 && MNE == 3))//負ける時
+            {
+                length -= (board.multiple(i, playerTeamId) - board.multiple(MNE, enemyTeamId)) * cuiclient.GameBoard.distance(P, E);
+            }
+
+        }
+        score += k4 * length;
+          */
+        
+        //タワーの取りやすさ
+        /*
+        int count = 0;
+        for (int i = 0; i < 3; i++) {
+            if (board.towerHold[i] != playerTeamId) {
+                count -= board.peripheral(cuiclient.GameBoard.distanceTowerNumber(board.unitLocation[playerTeamId][i]), enemyTeamId)
+                        * cuiclient.GameBoard.distanceTower(board.unitLocation[playerTeamId][i]);
+            }
+        }
+        */
+
+        //score += k5 * count;
+
+        return score;
+        
     }
     
     /**
@@ -148,6 +212,7 @@ public class GameMaster implements TurnCounter.Callback{
     
     /**
      * 盤面状態を見て手を生成します
+     * @deprecated 
      */
     public Hand createHand(int vecX,int vecY,int index){
         int id = this.whoIsPlay();
@@ -155,6 +220,41 @@ public class GameMaster implements TurnCounter.Callback{
         int y = gameBoard.unitLocation[id][index].y + vecY;
         Hand hand = new Hand(x,y,index,id);
         return hand;
+    }
+    
+    
+    /**
+     * (x,y)にいるidが所有するユニット数を返す
+     * @param x
+     * @param y
+     * @param id
+     */
+    public int sumUnit(int x, int y, int id) {
+        Point i = new Point(x, y);
+        int total = 0;
+        for (int index = 0; index < 4; index++) {
+            if (distance(i, gameBoard.unitLocation[id][index]) == 0) {
+                total++;
+            }
+        }
+        return total;
+    }
+    
+    /**
+     * (x,y)にidが所有するユニットがあるかどうかを返す
+     * @param x
+     * @param y
+     * @param id
+     * @return ture 存在する false 存在しない
+     */
+    public boolean existsUnit(int x,int y,int id){
+        Point i = new Point(x, y);
+        for (int index = 0; index < 4; index++) {
+            if (distance(i, gameBoard.unitLocation[id][index]) == 0) {
+                return true;
+            }
+        }
+        return false;
     }
     
     

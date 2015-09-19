@@ -1069,6 +1069,8 @@ public class GameBoard {
                 return true;
         return false;
     }
+    
+    
     /**
      * 関数peripheral
      * 指定したタワーと、ユニット4体の距離を点数化する
