@@ -87,8 +87,6 @@ public class CUIClient {
         
         //MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
-        //alphaBeta.setParams(0.686014, 0.730685, 0.520478, 0.206630, 0.265467);
-
         cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameMaster);
         
         

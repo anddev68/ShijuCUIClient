@@ -20,42 +20,46 @@ import java.util.LinkedList;
  */
 public class AlphaBeta {
     
-    private LinkedList<GameMaster> inQueue;   //  展開待ち行列
-    private LinkedList<VirtualGameMaster> outQueue;   //  展開済み評価待ち行列
+   // private LinkedList<GameMaster> inQueue;   //  展開待ち行列
+   // private LinkedList<VirtualGameMaster> outQueue;   //  展開済み評価待ち行列
     private int id; //  プレイヤーのID
     
     private Hand[] optimizedHandList;  //  depthごとの最善手
     private ArrayList<Hand> moveList;   //  動きの候補リスト
+    
+    //  係数
+    private static final double[] K = {0.686014, 0.730685, 0.520478, 0.206630, 0.265467};
     
     public AlphaBeta(int id){
         this.id = id;
     }
     
     public ReturnValue alphabeta(int depth,GameMaster master){
-        optimizedHandList = new Hand[depth];
+        optimizedHandList = new Hand[depth+1];
         for(int i=0; i<optimizedHandList.length; i++) optimizedHandList[i] = new Hand(-1,-1,-1,-1);
         double score = alphabeta(depth,master,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
-        return new ReturnValue( score,optimizedHandList[depth-1] );
+        printHand();
+        return new ReturnValue( score,optimizedHandList[depth] );
     }
    
     
     private double alphabeta(int depth,GameMaster master,double alpha,double beta){
         //  一番最下層までもぐったら静的評価します
         if(depth==0){
-            double score = master.evaluate(id);
+            double score = master.evaluate(id,K);
             return score;
         }
         
         //  ノードの展開を行う
         //  優先順位付きで実現可能手をキューに入れる
-        inQueue = new LinkedList();
-        outQueue = new LinkedList();
+        LinkedList<GameMaster> inQueue = new LinkedList();
+        LinkedList<VirtualGameMaster>  outQueue = new LinkedList();
         inQueue.add(master);  //  初期ノード追加
-        expand();
+        expand(inQueue,outQueue);
         
         //  展開するノードがない
         if( outQueue.isEmpty() ){
-            return master.evaluate(id);
+            return master.evaluate(id,K);
         }
         
         //  展開したノードを用いて評価を再帰的に行う
@@ -63,7 +67,7 @@ public class AlphaBeta {
         double score;
         
         if(master.whoIsPlay()==this.id){
-            while(outQueue.isEmpty()){
+            while(!outQueue.isEmpty()){
                 tmp = outQueue.removeFirst();
                 score = alphabeta(depth - 1, tmp, alpha, beta);    //  再帰した結果を使って結果とする
                 if(score > alpha){ //  alphaの高いやつを選択
@@ -76,7 +80,7 @@ public class AlphaBeta {
             }
             return alpha;
         }else{  //  敵のターン
-            while (outQueue.isEmpty()) {
+            while (!outQueue.isEmpty()) {
                 tmp = outQueue.removeFirst();
                 score = alphabeta(depth-1,tmp,alpha,beta);  //  再帰呼び出し
                 if(score<beta){
@@ -95,7 +99,7 @@ public class AlphaBeta {
     /**
      * ノードを展開する
      */
-    private void expand(){
+    private void expand(LinkedList<GameMaster> inQueue,LinkedList<VirtualGameMaster> outQueue){
         
         //  乱数によって動かす方向を決定するための配列
         final int[] movex = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -109,10 +113,10 @@ public class AlphaBeta {
                     //  実現できない場合はスルー
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
                     //  実現できる場合はコピーを作成
-                    Hand hand = new Hand(movex[move], movey[move], index, tmp.whoIsPlay());
+                    Hand hand = tmp.createHand(movex[move], movey[move], index);
                     VirtualGameMaster copy = new VirtualGameMaster(tmp,hand);
                     //  コピーを動かす
-                    copy.move(hand.x,hand.y,hand.index);
+                    copy.movePos(hand.x,hand.y,hand.index);
                     //  ターンを変える
                     copy.nextPhase();
                     
@@ -131,6 +135,14 @@ public class AlphaBeta {
         
     }
     
+    /**
+     * 
+     */
+    private void printHand(){
+        for(int i=0; i<this.optimizedHandList.length; i++){
+            System.out.println(this.optimizedHandList[i].toString());
+        }
+    }
     
     
     
