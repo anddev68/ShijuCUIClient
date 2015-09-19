@@ -27,7 +27,9 @@ public class GameBoard {
     }
     
     public GameBoard(GameBoard board){
-
+        tower = new int[3];
+        for(int i=0; i<3; i++) tower[i] = board.tower[i];
+        
         unitLocation = new Point[2][4];
         for (int i = 0; i < unitLocation.length; i++) {
             for (int j = 0; j < unitLocation[i].length; j++) {

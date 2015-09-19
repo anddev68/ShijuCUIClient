@@ -40,10 +40,12 @@ public class TurnCounter {
         this.totalTurn = 0;
     }
     
-    public TurnCounter(TurnCounter tc){
+    public TurnCounter(TurnCounter tc,Callback cb){
         this.totalTurn = tc.totalTurn;
         this.turnState = tc.turnState;
-        this.callback = tc.callback;
+        this.firstPlayerId = tc.firstPlayerId;
+        //this.callback = tc.callback;
+        this.callback = cb;
         
     }
     

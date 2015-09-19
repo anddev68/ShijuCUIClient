@@ -29,9 +29,10 @@ public class GameMaster implements TurnCounter.Callback{
     }
     
     public GameMaster(GameMaster org){
-        this.turnCounter = new TurnCounter(org.turnCounter);
+        this.turnCounter = new TurnCounter(org.turnCounter,this);
         this.gameBoard = new GameBoard(org.gameBoard);
         this.pointController = new PointController(org.pointController);
+        
     }
 
     
@@ -71,14 +72,16 @@ public class GameMaster implements TurnCounter.Callback{
             return false;
         }
         
-        int id = turnCounter.whoIsPlay();
+        int id = whoIsPlay();
 
         //  距離が0もしくは2以上の移動は無効
-        if (cuiclient.GameBoard.distance(gameBoard.unitLocation[id][index], new Point(x, y)) != 1) {
-            System.out.print("移動する距離が0または2以上です:");
-            System.out.println("[" + id + "] " + x + "," + y);
+        
+        int distance = cuiclient.GameBoard.distance(gameBoard.unitLocation[id][index], new Point(x, y));
+        if (distance != 1) {
+            System.out.println("distance="+distance);
             return false;
         }
+        
         
         return true;
     }
@@ -114,7 +117,7 @@ public class GameMaster implements TurnCounter.Callback{
      * @return true 成功 false 失敗
      */
     public boolean checkMovePos(int x,int y,int index){
-        int id = turnCounter.whoIsPlay();
+        int id = whoIsPlay();
         
         //  距離が0もしくは2以上の移動は無効
         if (cuiclient.GameBoard.distance(gameBoard.unitLocation[id][index], new Point(x, y)) != 1) {
