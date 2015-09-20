@@ -85,38 +85,38 @@ public class GameMaster implements TurnCounter.Callback{
         score += k[2] * (tower + 3);
 
         //  相性評価
-        /*
+        
         int length = 0;
         for (int i = 0; i < 3; i++) {     //全ての駒に対して
-            int MNE = board.mostNear(playerTeamId, i, enemyTeamId);  //MNE = mostNearEnemy
-            Point P = board.unitLocation[playerTeamId][i];
-            Point E = board.unitLocation[enemyTeamId][MNE];
+            int MNE = getNearestUnit(id, i, eId);  //MNE = mostNearEnemy   　最も近い敵
+            Point P = gameBoard.unitLocation[id][i];
+            Point E = gameBoard.unitLocation[eId][MNE];
 
             // (相手の数-自分の数) * 距離 の分だけ変化
             if ((i != 3 && i == MNE + 1) || (i == 3 && MNE == 0)) //勝てる時
             {
-                length += (board.multiple(i, playerTeamId) - board.multiple(MNE, enemyTeamId)) * cuiclient.GameBoard.distance(P, E);
+                length += (sumEnemyUnit(id, i) - sumEnemyUnit(eId, MNE)) * cuiclient.GameBoard.distance(P, E);
             } else if ((i != 0 && i == MNE - 1) || (i == 0 && MNE == 3))//負ける時
             {
-                length -= (board.multiple(i, playerTeamId) - board.multiple(MNE, enemyTeamId)) * cuiclient.GameBoard.distance(P, E);
+                length -= (sumEnemyUnit(id, i) - sumEnemyUnit(eId, MNE)) * cuiclient.GameBoard.distance(P, E);
             }
 
         }
-        score += k4 * length;
-          */
+        score += k[3] * length;
+         
         
         //タワーの取りやすさ
         /*
         int count = 0;
         for (int i = 0; i < 3; i++) {
-            if (board.towerHold[i] != playerTeamId) {
+            if (gameBoard.tower[i] != id) {
                 count -= board.peripheral(cuiclient.GameBoard.distanceTowerNumber(board.unitLocation[playerTeamId][i]), enemyTeamId)
                         * cuiclient.GameBoard.distanceTower(board.unitLocation[playerTeamId][i]);
             }
-        }
-        */
+        }*/
+        
 
-        //score += k5 * count;
+        //  score += k5 * count;
 
         return score;
         
@@ -240,6 +240,7 @@ public class GameMaster implements TurnCounter.Callback{
         return total;
     }
     
+    
     /**
      * (x,y)にidが所有するユニットがあるかどうかを返す
      * @param x
@@ -255,6 +256,47 @@ public class GameMaster implements TurnCounter.Callback{
             }
         }
         return false;
+    }
+   
+    
+    /**
+     * unitLocation[id][index]と同じ座標にいる敵ユニットの数を返す
+     */
+    public int sumEnemyUnit(int id,int index){
+        int count = 0;
+        int eId = id==0 ? 1: 0;
+        int X = gameBoard.unitLocation[id][index].x;
+        int Y = gameBoard.unitLocation[id][index].y;
+        for (int j = 0; j < 3; j++) {
+            if (index != j && gameBoard.unitLocation[eId][j].x == X && gameBoard.unitLocation[eId][j].y == Y) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    
+    
+    /**
+     * 最も近いユニット番号を返す
+     *  @see GameBoard#distance(java.awt.Point, java.awt.Point) 
+     * @param id1 対象となるユニットのプレイヤー
+     * @param i 対象となるユニット番号
+     * @param id2 どのプレイヤーのユニットの中から最も近いユニットを探すか
+     * @return 最も近いユニット番号
+     */
+    public int getNearestUnit(int id1, int i, int id2) {
+        int nearUnit = 0;
+        int nearLength = 10;
+        int length = 0;
+        for (int j = 0; j < 3; j++) {
+            length = cuiclient.GameBoard.distance(gameBoard.unitLocation[id1][i], gameBoard.unitLocation[id2][j]);
+            if (length < nearLength) {
+                nearUnit = j;
+                nearLength = length;
+            }
+        }
+        return nearUnit;
     }
     
     

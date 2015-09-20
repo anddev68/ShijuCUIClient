@@ -71,7 +71,7 @@ public class AlphaBeta {
     private double alphabeta(int depth,GameMaster master,double alpha,double beta){
         //  一番最下層までもぐったら静的評価します
         if(depth==0){
-            double score = master.evaluate(id,K);
+            double score = master.evaluate(this.id,K);
             return score;
         }
         
@@ -84,7 +84,7 @@ public class AlphaBeta {
         
         //  展開するノードがない
         if( outQueue.isEmpty() ){
-            return master.evaluate(id,K);
+            return master.evaluate(this.id,K);
         }
         
         //  展開したノードを用いて評価を再帰的に行う
