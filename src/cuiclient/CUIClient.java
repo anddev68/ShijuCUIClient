@@ -88,9 +88,10 @@ public class CUIClient {
         //MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
         cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(3, gameMaster);
-        
+       
         
         Hand hand = result.optimized;
+        System.out.println();
         System.out.print(hand);
         System.out.println(" score:"+result.score);
         this.thread.sendPlayMessage(hand.index, hand.x, hand.y);
@@ -182,6 +183,8 @@ public class CUIClient {
 
         @Override
         public void onReceiveCoundNotMove() {
+            System.out.println("Cound Not Move");
+            System.out.println("state:"+gameMaster.getTurnState());
         }
 
         @Override

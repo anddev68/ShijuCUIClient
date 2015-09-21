@@ -109,6 +109,12 @@ public class GameBoard {
 
     /**
      * 物理的に移動可能かどうか判断
+     * フィールド内または陣地への移動はできません
+     * @param x x座標
+     *      有効数値[0-9]かつ陣地でない場合
+     * @param y y座標
+     *      有効数値[0-9]かつ陣地でない場合
+     * @return 移動可能の場合true それ以外false
      */
     public static boolean availableArea(int x, int y) {
         if (x < 0) {
@@ -123,6 +129,10 @@ public class GameBoard {
         if (y < 0) {
             return false;
         }
+        
+        if(x==4 && y==7) return false;
+        if(x==4 && y==1) return false;
+        
         return true;
     }
     

@@ -13,6 +13,7 @@ import cuiclient.Hand;
 public class VirtualGameMaster extends GameMaster implements Comparable<VirtualGameMaster>{
     
     private Hand lastHand;
+    private Hand lastHand2;
     private int priority;
     
     public VirtualGameMaster(GameMaster org,Hand hand){
@@ -23,7 +24,8 @@ public class VirtualGameMaster extends GameMaster implements Comparable<VirtualG
     
     public VirtualGameMaster(VirtualGameMaster org,Hand hand){
         super(org);
-        lastHand = org.lastHand;
+        this.lastHand = hand;
+        this.lastHand2 = org.lastHand2;
         priority = org.priority;
     }
     

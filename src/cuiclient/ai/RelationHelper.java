@@ -101,6 +101,14 @@ public class RelationHelper {
                             for (int f = 0; f < 9; f++) {
                                 for (int g = 0; g < 4; g++) {
                                     for(int h=0; h<2; h++){
+                                        //  Rp=Rs,p=sのときは同じコマ
+                                        //  同じコマの時はタワーへの距離
+                                        /*
+                                        if(a==e&&b==f&&c==g&&d==h)
+                                            PARAM_TABLE[a][b][c][d][e][f][g][h] = 100- Math.pow(b-4 , 2);
+                                        else
+                                            PARAM_TABLE[a][b][c][d][e][f][g][h] = 0;
+                                                */
                                         PARAM_TABLE[a][b][c][d][e][f][g][h] = Math.random();
                                     }
                                 }
@@ -115,13 +123,6 @@ public class RelationHelper {
     
     
     
-    
-    
-    
-    
-    
-    
-
     
     private static RelationHelper helper;
     public static RelationHelper getInstance(){

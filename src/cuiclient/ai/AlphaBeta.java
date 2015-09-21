@@ -100,6 +100,8 @@ public class AlphaBeta {
                     this.optimizedHandList[depth]  = tmp.getLastHand();
                 }
                 if(alpha >=beta ){
+                    //System.out.print("BC ");
+                    this.optimizedHandList[depth] = tmp.getLastHand();
                     return alpha;   //  betaカット
                 }
             }
@@ -113,6 +115,8 @@ public class AlphaBeta {
                     this.optimizedHandList[depth] = tmp.getLastHand();
                 }
                 if (alpha >= beta) {
+                    //System.out.print("AC ");
+                    this.optimizedHandList[depth] = tmp.getLastHand();
                     return beta; /* アルファカット */
                 }
             }
