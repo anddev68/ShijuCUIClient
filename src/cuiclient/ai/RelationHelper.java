@@ -103,13 +103,13 @@ public class RelationHelper {
                                     for(int h=0; h<2; h++){
                                         //  Rp=Rs,p=sのときは同じコマ
                                         //  同じコマの時はタワーへの距離
-                                        /*
+                                        
                                         if(a==e&&b==f&&c==g&&d==h)
                                             PARAM_TABLE[a][b][c][d][e][f][g][h] = 100- Math.pow(b-4 , 2);
                                         else
                                             PARAM_TABLE[a][b][c][d][e][f][g][h] = 0;
-                                                */
-                                        PARAM_TABLE[a][b][c][d][e][f][g][h] = Math.random();
+                                               
+                                        //  PARAM_TABLE[a][b][c][d][e][f][g][h] = Math.random();
                                     }
                                 }
                             }

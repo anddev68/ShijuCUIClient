@@ -112,11 +112,11 @@ public class AlphaBeta {
                 score = alphabeta(depth-1,tmp,alpha,beta);  //  再帰呼び出し
                 if(score<beta){
                     beta = score;   //  ベータ値更新
-                    this.optimizedHandList[depth] = tmp.getLastHand();
+                    this.optimizedHandList[depth] = new Hand(tmp.getLastHand());
                 }
                 if (alpha >= beta) {
                     //System.out.print("AC ");
-                    this.optimizedHandList[depth] = tmp.getLastHand();
+                    this.optimizedHandList[depth] = new Hand(tmp.getLastHand());
                     return beta; /* アルファカット */
                 }
             }

@@ -15,6 +15,8 @@ package cuiclient;
     public class Hand{
         public int x,y,index,playerId;
         public Hand(int x,int y,int index,int id){ this.x = x; this.y = y; this.index = index; this.playerId = id; }
+        public Hand(Hand org){this.x = org.x; this.y = org.y; this.index = org.index; this.playerId = org.playerId; }
+        
         public boolean equals(int x,int y,int index,int id){ 
             return (this.x==x&&this.y==y&&this.index==index&&this.playerId==id);
         }
@@ -22,6 +24,5 @@ package cuiclient;
         @Override
         public String toString(){
             return ""+x+","+y+" index:"+index+" id:"+playerId;
-        }
-        
+        }        
     }
