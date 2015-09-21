@@ -7,11 +7,14 @@ package cuiclient.game;
 
 import static cuiclient.GameBoard.distance;
 import cuiclient.Hand;
+import cuiclient.ai.Relation;
+import cuiclient.ai.RelationHelper;
 import static cuiclient.game.GameBoard.towerPos;
 import static cuiclient.game.GameBoard.area;
 import static cuiclient.game.GameBoard.battleTable;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -57,6 +60,27 @@ public class GameMaster implements TurnCounter.Callback{
     public double evaluate(int id,double... k){
         int eId = (id==0) ? 1: 0;
         double score = 0.0;
+        
+        RelationHelper helper = RelationHelper.getInstance();
+        
+        //  駒間の関係を評価する
+        //  ボード上の駒は8個なので、8x8でそうあたりをかける
+        for(int p=0; p<8; p++){
+            for(int q=0; q<8; q++){
+                Relation relation = new Relation();
+                relation.pId = gameBoard.getUnitOwnerId(p);
+                relation.qId = gameBoard.getUnitOwnerId(q);
+                relation.pIndex = gameBoard.getUnitIndex(p);
+                relation.qIndex = gameBoard.getUnitIndex(q);
+                relation.pPos = gameBoard.getUnitLocation(p);
+                relation.qPos = gameBoard.getUnitLocation(q);
+                score += helper.evaluate(relation);
+            }
+        }
+        
+        return score;
+        
+        /*
 
         //  点数さによる評価
         //  バイアスをかけておかないとマイナスになる可能性がある 
@@ -103,6 +127,7 @@ public class GameMaster implements TurnCounter.Callback{
 
         }
         score += k[3] * length;
+        */
          
         
         //タワーの取りやすさ
@@ -118,7 +143,7 @@ public class GameMaster implements TurnCounter.Callback{
 
         //  score += k5 * count;
 
-        return score;
+       // return score;
         
     }
     
@@ -145,6 +170,9 @@ public class GameMaster implements TurnCounter.Callback{
             System.out.println("distance="+distance);
             return false;
         }
+        
+        gameBoard.unitLocation[id][index].x = x;
+        gameBoard.unitLocation[id][index].y = y;
         
         
         return true;

@@ -49,6 +49,37 @@ public class GameBoard {
     }
     
     
+    /**
+     * ユニットの位置を返す
+     * @param allUnitIndex 盤面上に振られた敵味方共通のユニットのID
+     * @return 
+     */
+    public Point getUnitLocation(int allUnitIndex){
+        return unitLocation[getUnitOwnerId(allUnitIndex)][getUnitIndex(allUnitIndex)];
+    }
+    
+    
+    /**
+     * ユニットの所有者IDを返す
+     * @param allUnitIndex 盤面上に振られたユニットのID
+     *      このIDは全ユニットでユニーク
+     *      0から3までは0を、4から7は1を返す
+     * @return 
+     */
+    public int getUnitOwnerId(int allUnitIndex){
+        return (allUnitIndex<3) ? 0: 1;
+    }
+    
+    /**
+     * ユニットのIndexを返す
+     * @param allUnitIndex 盤面上に振られたユニットのID
+     * @return 
+     */
+    public int getUnitIndex(int allUnitIndex){
+        return allUnitIndex % 4;
+    }
+    
+    
     
     // -----------------------------------------------------------------------------------------
     //     静的メソッド類

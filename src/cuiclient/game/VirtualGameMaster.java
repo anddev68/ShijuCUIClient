@@ -21,6 +21,12 @@ public class VirtualGameMaster extends GameMaster implements Comparable<VirtualG
         priority = 0;
     }
     
+    public VirtualGameMaster(VirtualGameMaster org,Hand hand){
+        super(org);
+        lastHand = org.lastHand;
+        priority = org.priority;
+    }
+    
     public Hand getLastHand(){
         return lastHand;
     }

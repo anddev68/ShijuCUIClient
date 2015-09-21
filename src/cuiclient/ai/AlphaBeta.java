@@ -165,7 +165,10 @@ public class AlphaBeta {
                     
                     //  コピーを動かす
                     boolean result = copy.movePos(hand.x,hand.y,hand.index);
-
+                    if(!result){
+                        System.out.println("error");
+                    }
+                    
                     //  ターンを変える
                     copy.nextPhase();
                     
