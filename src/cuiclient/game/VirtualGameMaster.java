@@ -24,8 +24,8 @@ public class VirtualGameMaster extends GameMaster implements Comparable<VirtualG
     
     public VirtualGameMaster(VirtualGameMaster org,Hand hand){
         super(org);
-        this.lastHand = hand;
-        this.lastHand2 = org.lastHand2;
+        this.lastHand = org.lastHand;
+       //   this.lastHand2 = org.lastHand2;
         priority = org.priority;
     }
     
