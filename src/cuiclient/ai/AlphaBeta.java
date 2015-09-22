@@ -153,7 +153,12 @@ public class AlphaBeta {
             for (int index = 0; index < 4; index++) {
                 for (int move = 0; move < 8; move++) {
                     //  実現できない場合はスルー
+                    //  定跡チェックを加えた
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
+                    if (!cuiclient.GameBoard.formula1(move, move, tmp.nowUnitLocation(id, index).x + movex[move], tmp.nowUnitLocation(id, index).y + movey[move], id))  continue;
+                    if (!cuiclient.GameBoard.foumal5(tmp.nowUnitLocation(id, index), movey[move], id)) continue;
+                    
+                     //  実現できる場合はコピーを作成
                     
                     //  実現できる場合はコピーを作成
                     //  コピー作成ついでに盤面＋方向で指した手を作成
