@@ -43,4 +43,29 @@ public class GameFomula {
         return result == 1;
     }
     
+    
+    /**
+     * 定跡5 タワー列以外の下がる移動を禁止する
+     * @param y 移動後の位置
+     * @param movey y方向への移動量
+     * @param nowPlayerId 現在プレイ中のID
+     * @return 
+     */
+    public static boolean formula5(int y,int movey,int nowPlayerId){
+        if(nowPlayerId==0){
+            //  タワーにいて下がる動き以外の、下がる動きは無効
+            //  タワーにいた＝次の座標が5のとき
+            if(movey==1 && y!=5) return false;
+        }else{
+            //  次の座標が3のとき
+            if(movey==-1 && y!=3) return false;
+            
+        }
+        
+        return true;
+            
+    }
+    
+    
+    
 }
