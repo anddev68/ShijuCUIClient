@@ -99,7 +99,7 @@ public class CUIClient {
         
         //MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
-        cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(5, gameMaster);
+        cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameMaster);
        
         
         Hand hand = result.optimized;

@@ -55,10 +55,10 @@ public class GameFomula {
         if(nowPlayerId==0){
             //  タワーにいて下がる動き以外の、下がる動きは無効
             //  タワーにいた＝次の座標が5のとき
-            if(movey==1 && y!=5) return false;
+            if(movey==1 && y!=5 && y!=4) return false;
         }else{
             //  次の座標が3のとき
-            if(movey==-1 && y!=3) return false;
+            if(movey==-1 && y!=3 && y!=4) return false;
             
         }
         
