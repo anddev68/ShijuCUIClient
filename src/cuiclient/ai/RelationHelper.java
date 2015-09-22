@@ -18,8 +18,21 @@ import java.io.PrintStream;
  */
 public class RelationHelper {
     
-    //  評価テーブル
-    private static double[][][][][][][][] PARAM_TABLE;
+    /**
+     * 評価テーブル
+     * id=0（下から見たときのテーブル）
+     * 位置は以下のように設定する
+     * 0,1,2,...
+     * 9,10....
+     * ..........81
+     * 種類は0~3
+     * 
+     * 全パターンは
+     * [x,y][kind][owner][x,y][kind][owner] (81*4)*(81*4)
+     * 
+     * R = ((73, 銀, 先手),(82, 飛,後手))の形にしたいので
+     */
+    private static int[][][][][][] PARAM_TABLE;
 
     
     /**
@@ -78,10 +91,17 @@ public class RelationHelper {
      *      この関係をもとに評価する
      *      評価パラメータは別ファイルで管理していて、プログラム開始時に読み込む
      *      読み込んだ評価パラメータからRelationを用いて引く
+     *      pが自分のユニット,qが敵のユニット
+     * @param id プレイヤーのID
+     *      idのプレイヤーからみた評価値を返します
      * @return
      */
-    public double evaluate(Relation r){
-        return PARAM_TABLE[r.pPos.x][r.pPos.y][r.pIndex][r.pId][r.qPos.x][r.qPos.y][r.qIndex][r.qId];
+    public double evaluate(Relation r,int id){
+        //  評価テーブルはid=0から見たときの値です
+        //  id==1の場合は上下反転する必要あり
+        
+        double score = PARAM_TABLE[r.pPos.x+r.pPos.y*9][r.pIndex][r.pId][r.qPos.x+r.qPos.y*9][r.qIndex][r.qId];
+        return score;
     }
     
     
@@ -92,32 +112,63 @@ public class RelationHelper {
      * @see PARAM_TABLE
      */
     private void initalizeParamWithDefault(){
-        PARAM_TABLE = new double[9][9][4][2][9][9][4][2];
-        for (int a = 0; a < 9; a++) {
-            for (int b = 0; b < 9; b++) {
-                for (int c = 0; c < 4; c++) {
-                    for(int d=0; d<2; d++){
-                        for (int e = 0; e < 9; e++) {
-                            for (int f = 0; f < 9; f++) {
-                                for (int g = 0; g < 4; g++) {
-                                    for(int h=0; h<2; h++){
-                                        //  Rp=Rs,p=sのときは同じコマ
-                                        //  同じコマの時はタワーへの距離
-                                        
-                                        if(a==e&&b==f&&c==g&&d==h)
-                                            PARAM_TABLE[a][b][c][d][e][f][g][h] = 100- Math.pow(b-4 , 2);
-                                        else
-                                            PARAM_TABLE[a][b][c][d][e][f][g][h] = 0;
-                                               
-                                        //  PARAM_TABLE[a][b][c][d][e][f][g][h] = Math.random();
-                                    }
+        PARAM_TABLE = new int[81][4][2][81][4][2];
+        for(int a=0; a<81; a++){
+            for(int b=0; b<4; b++){
+                for(int c=0; c<81; c++){
+                    for(int d=0; d<4; d++){
+                        for(int e=0; e<2; e++){
+                            for(int f=0; f<2; f++){
+                                //  すべてのパターンにおいて、ベースとなる点数（タワーまでの距離）を追加する
+                                //  タワーまでの距離が大きいと評価を悪くする
+                                //  味方の距離はマイナスで、敵の距離はプラスで計算する
+                               // int d1 = (int) ( -Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2)  *( e==0? 1: -1 ));
+                                //int d2 = (int) ( -Math.pow(GameBoard.distanceTower(c% 9, c / 9), 2) * (f==0? 1: -1) );
+                                //PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
+                                PARAM_TABLE[a][b][e][c][d][f] = 0;
+                                
+                                
+                                //  p==qのとき は位置評価のみ
+                                if (a == c && b == d && e==f) {
+                                    PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
+                                //  同じIDのとき、味方ユニット間の弱点マッチ（縦と横の関係）同士の結合度が高いものに点数を加える
+                                }else if(e==f && GameBoard.battleTable[b][d]==0){
+                                    PARAM_TABLE[a][b][e][c][d][f] += (int)(-GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
+                                //  異なるIDのとき、相性が良いものには距離が近いほうがよい
+                                //  相性が悪いものは遠いほうがよい
+                                }else if(e!=f){
+                                    //  バトルテーブルは相性が良い場合は1を返すので、距離が離れるほどこの値が大きくなる
+                                    //                            相性が悪い場合は-1を返すので、距離が離れるほどこの値は負の方向に大きくなる
+                                    //  この値が大きいと評価がよくなるので、距離を近くするほど大きくしたい、つまり-1をかける
+                                   //PARAM_TABLE[a][b][e][c][d][f] += (int) (-GameBoard.battleTable[b][d] * GameBoard.distance(a % 9, a / 9, c % 9, c / 9)); 
+                                //  それ以外の場合は評価を行わない    
+                                }else{
+
                                 }
+                                //  敵の場合はすべて逆にする
+                                if (e == 1) PARAM_TABLE[a][b][e][c][d][f] *= -1;
+                      
                             }
+                        }
+                        
+
                         }
                     }
                 }
+            }   //  テーブル作成多重ループここまで
+        
+        
+        /*
+        
+        for(int i=0; i<9; i++){
+            for(int k=0; k<9; k++){
+                    System.out.print(String.format("%3d", PARAM_TABLE[i*9+k][3][i * 9 + k][3]));
             }
-        }    
+            System.out.println();
+        }
+        System.out.println();
+                */
+                
     }
     
     

@@ -5,6 +5,7 @@
  */
 package cuiclient;
 
+import cuiclient.ai.RelationHelper;
 import cuiclient.connection.LoginReceiver;
 import cuiclient.connection.PlayReceiver;
 import cuiclient.connection.ServerThread;
@@ -32,6 +33,10 @@ public class CUIClient {
     }
     
     void start(){
+        
+        //  ここで1回読んでおくことでRelationパラメータを初期化する
+        RelationHelper.getInstance();
+        
         Scanner s = new Scanner(System.in);
         
         //  名前を�?��?
@@ -39,10 +44,12 @@ public class CUIClient {
         System.out.println("If press Enter,use default name.");
         String name = s.nextLine();
         
-        //  サーバを入�?
+        //  サーバのアドレスを入力する
         System.out.println("Input server adress.");
         System.out.println("If press Enter,use default name,'localhost'");
         String server = s.nextLine();
+        
+
         
         //  ポ�?�トを入�?
         /*
@@ -80,6 +87,11 @@ public class CUIClient {
     }
 
     void startAI(){
+        
+        System.out.print("current score:");
+        System.out.println( gameMaster.evaluate(0, null) );
+        
+        
         log("start AI.");
 
         //MinMax minMax = new MinMax(teamId);
@@ -101,8 +113,26 @@ public class CUIClient {
     }
 
 
-    void search(){
-        
+    /**
+     * テストメソッド
+     * 評価関数が適切に動いているかどうかをチェックするためのもの
+     */
+    void test(){
+        gameMaster = new GameMaster();    
+        gameMaster.setUnitLocation(4, 7, 0, 0);
+        gameMaster.setUnitLocation(4, 7, 1, 0);
+        gameMaster.setUnitLocation(4, 7, 2, 0);
+        gameMaster.setUnitLocation(4, 7, 3, 0);
+        gameMaster.setUnitLocation(4, 1, 0, 1);
+        gameMaster.setUnitLocation(4, 1, 1, 1);
+        gameMaster.setUnitLocation(4, 1, 2, 1);
+        gameMaster.setUnitLocation(4, 1, 3, 1);
+        gameMaster.setTower(0, -1);
+        gameMaster.setTower(1, -1);
+        gameMaster.setTower(2, -1);
+        double score = gameMaster.evaluate(0, 0);
+        System.out.println("score:");
+        System.out.println(score);
     }
     
 
@@ -211,7 +241,7 @@ public class CUIClient {
      */
     public static void main(String[] args) {
         new CUIClient().start();
-        
+        //new CUIClient().test();
         
     }
     

@@ -74,9 +74,12 @@ public class GameMaster implements TurnCounter.Callback{
                 relation.qIndex = gameBoard.getUnitIndex(q);
                 relation.pPos = gameBoard.getUnitLocation(p);
                 relation.qPos = gameBoard.getUnitLocation(q);
-                score += helper.evaluate(relation);
+                score += helper.evaluate(relation,id);
+               // System.out.println("score");
             }
         }
+
+
         
         return score;
         

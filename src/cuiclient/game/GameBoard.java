@@ -5,6 +5,7 @@
  */
 package cuiclient.game;
 
+
 import java.awt.Point;
 
 /**
@@ -67,7 +68,7 @@ public class GameBoard {
      * @return 
      */
     public int getUnitOwnerId(int allUnitIndex){
-        return (allUnitIndex<3) ? 0: 1;
+        return (allUnitIndex<4) ? 0: 1;
     }
     
     /**
@@ -106,6 +107,25 @@ public class GameBoard {
             }
         }
     }
+    
+    public static int distance(int x1,int y1,int x2,int y2) {
+        if (x1 == x2) {
+            return Math.abs(y1 - y2);
+        } else if (y1 == y2) {
+            return Math.abs(x1 - x2);
+        } else {
+            //斜めに近づく場合は長い方と同じだけで大丈夫
+            int xdef = Math.abs(x1 - x2);
+            int ydef = Math.abs(y1 - y2);
+            if (xdef > ydef) {
+                return xdef;
+            } else {
+                return ydef;
+            }
+        }
+    }
+
+    
 
     /**
      * 物理的に移動可能かどうか判断
@@ -137,6 +157,27 @@ public class GameBoard {
     }
     
     
+    /**
+     * 一番短いタワーまでの距離を算出する
+     *  タワーの場所は問わない
+     * @see GameBoard#towerPos
+     * @param p
+     * @return タワーまでの距離
+     */
+    public static int distanceTower(Point p) {
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < 3; i++) {
+            int tmp = distance(p, towerPos[i]);
+            if (tmp < min) {
+                min = tmp;
+            }
+        }
+        return min;
+    }
+    
+    public static int distanceTower(int x,int y) {
+        return distanceTower(new Point(x,y));
+    }
     
     
     /**
