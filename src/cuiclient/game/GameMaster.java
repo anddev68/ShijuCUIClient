@@ -63,6 +63,7 @@ public class GameMaster implements TurnCounter.Callback{
         
         RelationHelper helper = RelationHelper.getInstance();
         
+        
         //  駒間の関係を評価する
         //  ボード上の駒は8個なので、8x8でそうあたりをかける
         for(int p=0; p<8; p++){
@@ -78,75 +79,14 @@ public class GameMaster implements TurnCounter.Callback{
                // System.out.println("score");
             }
         }
-
+        
+        //  敵の駒のみ評価とする
+        //  近いほうが点数が低くなる
+        //score -= gameBoard.getUnitLocation(7).y ;
 
         
         return score;
-        
-        /*
-
-        //  点数さによる評価
-        //  バイアスをかけておかないとマイナスになる可能性がある 
-        score += k[0] * (pointController.getPoint(id) -pointController.getPoint(eId) + 50);
-
-        //  自分のユニットとタワーまでの距離
-        //  2015/09/03変更
-        //  平均値が小さく、分散が小さいものを選択する
-        int eDist = 0;
-        int pDist = 0;
-        for (int i = 0; i < 4; i++) {
-            pDist += Math.pow(cuiclient.GameBoard.distanceTower(gameBoard.unitLocation[id][i]), 2);  //  距離が多くなればなるほど点数が下がる
-            eDist += Math.pow(cuiclient.GameBoard.distanceTower(gameBoard.unitLocation[eId][i]), 2);  //  
-        }
-        score += k[1] * (-pDist + eDist + 100);
-
-        //  保持状態
-        int tower = 0;
-        for (int i = 0; i < 3; i++) {
-            if (gameBoard.tower[i] == id) {
-                tower++;
-            } else {
-                tower--;
-            }
-        }
-        score += k[2] * (tower + 3);
-
-        //  相性評価
-        
-        int length = 0;
-        for (int i = 0; i < 3; i++) {     //全ての駒に対して
-            int MNE = getNearestUnit(id, i, eId);  //MNE = mostNearEnemy   　最も近い敵
-            Point P = gameBoard.unitLocation[id][i];
-            Point E = gameBoard.unitLocation[eId][MNE];
-
-            // (相手の数-自分の数) * 距離 の分だけ変化
-            if ((i != 3 && i == MNE + 1) || (i == 3 && MNE == 0)) //勝てる時
-            {
-                length += (sumEnemyUnit(id, i) - sumEnemyUnit(eId, MNE)) * cuiclient.GameBoard.distance(P, E);
-            } else if ((i != 0 && i == MNE - 1) || (i == 0 && MNE == 3))//負ける時
-            {
-                length -= (sumEnemyUnit(id, i) - sumEnemyUnit(eId, MNE)) * cuiclient.GameBoard.distance(P, E);
-            }
-
-        }
-        score += k[3] * length;
-        */
-         
-        
-        //タワーの取りやすさ
-        /*
-        int count = 0;
-        for (int i = 0; i < 3; i++) {
-            if (gameBoard.tower[i] != id) {
-                count -= board.peripheral(cuiclient.GameBoard.distanceTowerNumber(board.unitLocation[playerTeamId][i]), enemyTeamId)
-                        * cuiclient.GameBoard.distanceTower(board.unitLocation[playerTeamId][i]);
-            }
-        }*/
-        
-
-        //  score += k5 * count;
-
-       // return score;
+       
         
     }
     

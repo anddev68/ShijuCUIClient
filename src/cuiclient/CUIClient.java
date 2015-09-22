@@ -123,8 +123,8 @@ public class CUIClient {
         gameMaster.setUnitLocation(4, 7, 1, 0);
         gameMaster.setUnitLocation(4, 7, 2, 0);
         gameMaster.setUnitLocation(4, 6, 3, 0);
-        gameMaster.setUnitLocation(3, 2, 0, 1);
-        gameMaster.setUnitLocation(4, 2, 1, 1);
+        gameMaster.setUnitLocation(4, 2, 0, 1);
+        gameMaster.setUnitLocation(5, 2, 1, 1);
         gameMaster.setUnitLocation(4, 1, 2, 1);
         gameMaster.setUnitLocation(4, 1, 3, 1);
         gameMaster.setTower(0, -1);
@@ -240,8 +240,8 @@ public class CUIClient {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //  new CUIClient().start();
-        new CUIClient().test();
+        new CUIClient().start();
+        //  new CUIClient().test();
         
     }
     

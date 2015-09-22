@@ -77,8 +77,8 @@ public class AlphaBeta {
         
         //  ノードの展開を行う
         //  優先順位付きで実現可能手をキューに入れる
-        LinkedList<GameMaster> inQueue = new LinkedList();
-        PriorityQueue<VirtualGameMaster>  outQueue = new PriorityQueue<>();
+        final LinkedList<GameMaster> inQueue = new LinkedList();
+        final PriorityQueue<VirtualGameMaster>  outQueue = new PriorityQueue<>();
         inQueue.add(master);  //  初期ノード追加
         expand(inQueue,outQueue);
         
@@ -141,7 +141,7 @@ public class AlphaBeta {
      *      展開時に優先付けを行い、AlphaBetaの精度を高めた。
      *      優先順位はバトルがおきるか否かで判断する
      */
-    private void expand(LinkedList<GameMaster> inQueue,PriorityQueue<VirtualGameMaster> outQueue){
+    private void expand(final LinkedList<GameMaster> inQueue,final PriorityQueue<VirtualGameMaster> outQueue){
         
         //  乱数によって動かす方向を決定するための配列
         final int[] movex = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -156,8 +156,8 @@ public class AlphaBeta {
                     //  実現できない場合はスルー
                     //  定跡チェックを加えた
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
-                    if (!cuiclient.GameBoard.formula1(move, move, tmp.nowUnitLocation(id, index).x + movex[move], tmp.nowUnitLocation(id, index).y + movey[move], id))  continue;
-                    if (!cuiclient.GameBoard.foumal5(tmp.nowUnitLocation(id, index), movey[move], id)) continue;
+                    //if (!cuiclient.GameBoard.formula1(move, move, tmp.nowUnitLocation(id, index).x + movex[move], tmp.nowUnitLocation(id, index).y + movey[move], id))  continue;
+                   // if (!cuiclient.GameBoard.foumal5(tmp.nowUnitLocation(id, index), movey[move], id)) continue;
                     
                      //  実現できる場合はコピーを作成
                     
