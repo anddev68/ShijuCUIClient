@@ -92,6 +92,7 @@ public class AlphaBeta {
         double score;
         
         if(master.whoIsPlay()==this.id){
+            //  AIのノードの場合
             while(!outQueue.isEmpty()){
                 tmp = outQueue.poll();
                 score = alphabeta(depth - 1, tmp, alpha, beta);    //  再帰した結果を使って結果とする
@@ -100,9 +101,9 @@ public class AlphaBeta {
                     this.optimizedHandList[depth]  = tmp.getLastHand();
                 }
                 if(alpha >=beta ){
-                    //System.out.print("BC ");
+                    System.out.print("BC ");
                     this.optimizedHandList[depth] = tmp.getLastHand();
-                    return alpha;   //  betaカット
+                    return beta;   //  betaカット
                 }
             }
             return alpha;
@@ -115,9 +116,9 @@ public class AlphaBeta {
                     this.optimizedHandList[depth] = tmp.getLastHand();
                 }
                 if (alpha >= beta) {
-                    //System.out.print("AC ");
+                    System.out.print("AC ");
                     this.optimizedHandList[depth] = tmp.getLastHand();
-                    return beta; /* アルファカット */
+                    return alpha; /* アルファカット */
                 }
             }
             return beta;
