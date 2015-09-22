@@ -391,8 +391,8 @@ public class GameBoard {
      */
     public static boolean formula6(Point unitLocation,int index ,Hand lastHand){
         //動かす駒が違うときは問題なし
-        if( index == lastHand.index && (lastHand.x - unitLocation.x < 2) && (lastHand.y - unitLocation.y <2) )
-            return false;
+  //      if( index == lastHand.index && (lastHand.x - unitLocation.x < 2) && (lastHand.y - unitLocation.y <2) )
+    //        return false;
         return true;
     }
     
@@ -547,7 +547,7 @@ public class GameBoard {
             
 
             //  動かす
-            boolean result = playout.movePos(hand.x, hand.y, hand.index);
+            boolean result = playout.movePos(hand.getX(), hand.getY(), hand.getIndex());
             if(!result){
                 System.out.println("GameBoard#doPlayout(), 無効な動きが選択されました");
             }

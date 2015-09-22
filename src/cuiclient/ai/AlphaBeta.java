@@ -5,12 +5,10 @@
  */
 package cuiclient.ai;
 
-import cuiclient.GameBoard;
 import cuiclient.Hand;
 import cuiclient.game.GameMaster;
 import cuiclient.game.TurnCounter;
 import cuiclient.game.VirtualGameMaster;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -34,7 +32,6 @@ public class AlphaBeta {
     public AlphaBeta(int id){
         this.id = id;
     }
-        // 有効移動範囲配列
     
     /**
      * AlphaBetaの外部公開用メソッド
@@ -49,6 +46,8 @@ public class AlphaBeta {
         optimizedHandList = new Hand[depth+1];
         for(int i=0; i<optimizedHandList.length; i++) optimizedHandList[i] = new Hand(-1,-1,-1,-1);
         double score = alphabeta(depth,master,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
+        printHandStack();
+        
         return new ReturnValue( score,optimizedHandList[depth] );
     }
    
@@ -113,11 +112,11 @@ public class AlphaBeta {
                 score = alphabeta(depth-1,tmp,alpha,beta);  //  再帰呼び出し
                 if(score<beta){
                     beta = score;   //  ベータ値更新
-                    this.optimizedHandList[depth] = new Hand(tmp.getLastHand());
+                    this.optimizedHandList[depth] = tmp.getLastHand();
                 }
                 if (alpha >= beta) {
                     //System.out.print("AC ");
-                    this.optimizedHandList[depth] = new Hand(tmp.getLastHand());
+                    this.optimizedHandList[depth] = tmp.getLastHand();
                     return beta; /* アルファカット */
                 }
             }
@@ -155,10 +154,11 @@ public class AlphaBeta {
                 for (int move = 0; move < 8; move++) {
                     //  実現できない場合はスルー
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
-                    if (!cuiclient.GameBoard.formula1(move, move,tmp.nowUnitLocation(id,index).x+movex[move],tmp.nowUnitLocation(id,index).y+movey[move] ,id))  continue;
-                    if (!cuiclient.GameBoard.formula5(tmp.nowUnitLocation(id,index), movey[move], id) )  continue;
+              //      if (!cuiclient.GameBoard.formula1(move, move,tmp.nowUnitLocation(id,index).x+movex[move],tmp.nowUnitLocation(id,index).y+movey[move] ,id))  continue;
+            //        if (!cuiclient.GameBoard.formula5(tmp.nowUnitLocation(id,index), movey[move], id) )  continue;
         //            if (!cuiclient.GameBoard.formula6(tmp.nowUnitLocation(id,index),index,tmp2.getLastHand() ))  continue;
                     //  実現できる場合はコピーを作成
+                    //  コピー作成ついでに盤面＋方向で指した手を作成
                     Hand hand = tmp.createHand(movex[move], movey[move], index);
                     VirtualGameMaster copy = new VirtualGameMaster(tmp,hand);
                     
@@ -166,12 +166,12 @@ public class AlphaBeta {
                     //  バトルがおきるのであれば優先度を高くする
                     //  @since 1.0.1
                     int eid = copy.whoIsPlay() == 0 ? 1 : 0;    //  copyの盤面の人からみた敵のID
-                    if(copy.existsUnit(hand.x, hand.y, eid)){   //  動かした場所に敵ユニットがある＝戦闘＝優先度高い
+                    if(copy.existsUnit(hand.getX(), hand.getY(), eid)){   //  動かした場所に敵ユニットがある＝戦闘＝優先度高い
                         copy.setPriority(1);
                     }
                     
-                    //  コピーを動かす
-                    boolean result = copy.movePos(hand.x,hand.y,hand.index);
+                    //  今指した手でコピーを動かす
+                    boolean result = copy.movePos(hand.getX(),hand.getY(),hand.getIndex());
                     if(!result){
                         System.out.println("error");
                     }
@@ -195,7 +195,18 @@ public class AlphaBeta {
     }
     
     
-
+    /**
+     * 手の候補スタックを表示する
+     * @see AlphaBeta#optimizedHandList
+     */
+    private void printHandStack(){
+        for(int i=optimizedHandList.length-1; i>0; i--){
+            System.out.print("【");
+            System.out.print( optimizedHandList[i] );
+            System.out.print("】 ");
+        }
+        
+    }
     
     
     
