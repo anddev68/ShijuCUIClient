@@ -48,6 +48,7 @@ public class AlphaBeta {
     public ReturnValue alphabeta(int depth,GameMaster master){
         optimizedHandList = new Hand[depth+1];
         for(int i=0; i<optimizedHandList.length; i++) optimizedHandList[i] = new Hand(-1,-1,-1,-1);
+        this.printHandStack();
         double score = alphabeta(depth,master,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
         return new ReturnValue( score,optimizedHandList[depth] );
     }
@@ -113,11 +114,11 @@ public class AlphaBeta {
                 score = alphabeta(depth-1,tmp,alpha,beta);  //  再帰呼び出し
                 if(score<beta){
                     beta = score;   //  ベータ値更新
-                    this.optimizedHandList[depth] = new Hand(tmp.getLastHand());
+                    this.optimizedHandList[depth] = tmp.getLastHand();
                 }
                 if (alpha >= beta) {
                     //System.out.print("AC ");
-                    this.optimizedHandList[depth] = new Hand(tmp.getLastHand());
+                    this.optimizedHandList[depth] = tmp.getLastHand();
                     return beta; /* アルファカット */
                 }
             }
@@ -194,7 +195,19 @@ public class AlphaBeta {
     }
     
     
+    /**
+     * 敵の手も含めたこの後の予測を表示する
+     *
+     * @see AlphaBeta#optimizedHandList
+     */
+    private void printHandStack() {
+        for (int i = this.optimizedHandList.length - 1; i > 0; i--) {
+            System.out.print("【");
+            System.out.print(this.optimizedHandList[i]);
+            System.out.print("】 ");
+        }
 
+    }
     
     
     

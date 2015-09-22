@@ -47,19 +47,19 @@ package cuiclient;
         //  ゲッターメソッド
         //  ---------------------------------------------------------
         public int getX() {
-            return x;
+            return this.x;
         }
 
         public int getY() {
-            return y;
+            return this.y;
         }
 
         public int getIndex() {
-            return index;
+            return this.index;
         }
 
         public int getPlayerId() {
-            return playerId;
+            return this.playerId;
         }        
         
         

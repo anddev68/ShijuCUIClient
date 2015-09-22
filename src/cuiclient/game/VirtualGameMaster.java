@@ -12,22 +12,38 @@ import cuiclient.Hand;
  */
 public class VirtualGameMaster extends GameMaster implements Comparable<VirtualGameMaster>{
     
-    private Hand lastHand;
+    private Hand hand;
     private int priority;
     
     public VirtualGameMaster(GameMaster org,Hand hand){
         super(org);
-        if(org instanceof VirtualGameMaster){
-            this.lastHand = ((VirtualGameMaster)org).lastHand;    
+        
+        if (org instanceof VirtualGameMaster) {
+            //  VirtualGameMasterノードである場合は
+            //  同じIDによる2手差しの可能性がある
+            VirtualGameMaster vgm = (VirtualGameMaster) org;
+            if(vgm.hand.getPlayerId() == hand.getPlayerId()){
+                //  同じIDの場合はコピーして追加する
+                this.hand = Hand.createHandInsertFront(vgm.hand, hand);
+                
+            }else{
+                //  2手差しでない場合は新規作成
+                this.hand = hand;
+            }
+            
         }else{
-            this.lastHand = hand;           
+            //  GameMasterノードである場合は前指した手がないため新しい手を保存する
+            this.hand = hand;
         }
+        
+
+        
         priority = 0;
     }
     
     
     public Hand getLastHand(){
-        return lastHand;
+        return hand;
     }
     
     public void setPriority(int priority){
