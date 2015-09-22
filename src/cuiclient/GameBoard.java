@@ -374,6 +374,14 @@ public class GameBoard {
      * タワーの列以外の後退を禁止する
      * 
      */
+    public static boolean foumal5(Point unitLocation,int move,int id){
+        if(id == 0 && move == 1 && unitLocation.y != 5)
+            return false;
+        else if(id == 1 && move == -1 && unitLocation.y !=5)
+            return false;
+        return true;
+    }
+    
     
     /**
      * 定石6

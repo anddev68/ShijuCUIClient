@@ -497,6 +497,16 @@ public class GameMaster implements TurnCounter.Callback{
         }
     }
     
+    /**
+     * ユニットの現在地を返す
+     * 
+     */
+    public Point nowUnitLocation(int id,int index){
+        Point tmp = new Point();
+        tmp.x = gameBoard.unitLocation[id][index].x;
+        tmp.y = gameBoard.unitLocation[id][index].y;
+        return tmp;
+    }
     
     
     
