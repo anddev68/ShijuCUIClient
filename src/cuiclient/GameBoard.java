@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import cuiclient.Hand;
 
 
 /**
@@ -374,7 +375,7 @@ public class GameBoard {
      * タワーの列以外の後退を禁止する
      * 
      */
-    public static boolean foumal5(Point unitLocation,int move,int id){
+    public static boolean formula5(Point unitLocation,int move,int id){
         if(id == 0 && move == 1 && unitLocation.y != 4)
             return false;
         else if(id == 1 && move == -1 && unitLocation.y !=4)
@@ -386,13 +387,13 @@ public class GameBoard {
     /**
      * 定石6
      * 2連続移動の際の枝刈り
-     * 
+     * 2手目を指した後のユニットの位置が1手目でさせる位置だった場合無駄になっているので刈る
      */
-    private static boolean formula6(Point[][] unitLocation,int index,int pId,int turnState,int firstPlayerId){
-        
-        
-        //  その手は無効
-        return false;
+    public static boolean formula6(Point unitLocation,int index ,Hand lastHand){
+        //動かす駒が違うときは問題なし
+        if( index == lastHand.index && (lastHand.x - unitLocation.x < 2) && (lastHand.y - unitLocation.y <2) )
+            return false;
+        return true;
     }
     
  //   

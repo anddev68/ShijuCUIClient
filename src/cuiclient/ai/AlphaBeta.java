@@ -149,14 +149,15 @@ public class AlphaBeta {
         
         while(!inQueue.isEmpty()){
             GameMaster tmp = inQueue.removeFirst();
-
+//            VirtualGameMaster tmp2 = (VirtualGameMaster)tmp;
             //  すべての手について実現可能手を見つける
             for (int index = 0; index < 4; index++) {
                 for (int move = 0; move < 8; move++) {
                     //  実現できない場合はスルー
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
                     if (!cuiclient.GameBoard.formula1(move, move,tmp.nowUnitLocation(id,index).x+movex[move],tmp.nowUnitLocation(id,index).y+movey[move] ,id))  continue;
-                    if (!cuiclient.GameBoard.foumal5(tmp.nowUnitLocation(id,index), movey[move], id) )  continue;
+                    if (!cuiclient.GameBoard.formula5(tmp.nowUnitLocation(id,index), movey[move], id) )  continue;
+        //            if (!cuiclient.GameBoard.formula6(tmp.nowUnitLocation(id,index),index,tmp2.getLastHand() ))  continue;
                     //  実現できる場合はコピーを作成
                     Hand hand = tmp.createHand(movex[move], movey[move], index);
                     VirtualGameMaster copy = new VirtualGameMaster(tmp,hand);
