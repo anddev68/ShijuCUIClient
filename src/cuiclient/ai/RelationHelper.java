@@ -124,15 +124,15 @@ public class RelationHelper {
                                 //  味方の距離はマイナスで、敵の距離はプラスで計算する
                                // int d1 = (int) ( -Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2)  *( e==0? 1: -1 ));
                                 //int d2 = (int) ( -Math.pow(GameBoard.distanceTower(c% 9, c / 9), 2) * (f==0? 1: -1) );
-                                //PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
-                                PARAM_TABLE[a][b][e][c][d][f] = 0;
+                                PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
+                                //PARAM_TABLE[a][b][e][c][d][f] = 0;
                                 
                                 
                                 //  p==qのとき は位置評価のみ
                                 if (a == c && b == d && e==f) {
                                     PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
-                                }
-                                /*
+                                
+                                
                                 //  同じIDのとき、味方ユニット間の弱点マッチ（縦と横の関係）同士の結合度が高いものに点数を加える
                                 }else if(e==f && GameBoard.battleTable[b][d]==0){
                                     PARAM_TABLE[a][b][e][c][d][f] += (int)(-GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
@@ -146,7 +146,7 @@ public class RelationHelper {
                                 }else{
                                     
                                 }
-                                */
+                                
                                 //  敵の場合はすべて逆にする
                                 if (e == 1) PARAM_TABLE[a][b][e][c][d][f] *= -1;
                                 
