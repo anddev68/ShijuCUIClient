@@ -546,7 +546,7 @@ public class GameBoard {
             
 
             //  動かす
-            boolean result = playout.movePos(hand.x, hand.y, hand.index);
+            boolean result = playout.movePos(hand.getX(), hand.getY(), hand.getIndex());
             if(!result){
                 System.out.println("GameBoard#doPlayout(), 無効な動きが選択されました");
             }

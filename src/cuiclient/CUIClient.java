@@ -106,7 +106,7 @@ public class CUIClient {
         System.out.println();
         System.out.print(hand);
         System.out.println(" score:"+result.score);
-        this.thread.sendPlayMessage(hand.index, hand.x, hand.y);
+        this.thread.sendPlayMessage(hand.getIndex(), hand.getIndex(), hand.getIndex());
         
         
         log("end AI.");

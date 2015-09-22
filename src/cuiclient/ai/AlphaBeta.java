@@ -165,12 +165,12 @@ public class AlphaBeta {
                     //  バトルがおきるのであれば優先度を高くする
                     //  @since 1.0.1
                     int eid = copy.whoIsPlay() == 0 ? 1 : 0;    //  copyの盤面の人からみた敵のID
-                    if(copy.existsUnit(hand.x, hand.y, eid)){   //  動かした場所に敵ユニットがある＝戦闘＝優先度高い
+                    if(copy.existsUnit(hand.getX(), hand.getY(), eid)){   //  動かした場所に敵ユニットがある＝戦闘＝優先度高い
                         copy.setPriority(1);
                     }
                     
                     //  コピーを動かす
-                    boolean result = copy.movePos(hand.x,hand.y,hand.index);
+                    boolean result = copy.movePos(hand.getX(),hand.getY(),hand.getIndex());
                     if(!result){
                         System.out.println("error");
                     }
