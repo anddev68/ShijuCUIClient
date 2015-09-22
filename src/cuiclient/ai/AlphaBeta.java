@@ -5,12 +5,10 @@
  */
 package cuiclient.ai;
 
-import cuiclient.GameBoard;
 import cuiclient.Hand;
 import cuiclient.game.GameMaster;
 import cuiclient.game.TurnCounter;
 import cuiclient.game.VirtualGameMaster;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -34,7 +32,6 @@ public class AlphaBeta {
     public AlphaBeta(int id){
         this.id = id;
     }
-        // 有効移動範囲配列
     
     /**
      * AlphaBetaの外部公開用メソッド
@@ -48,8 +45,9 @@ public class AlphaBeta {
     public ReturnValue alphabeta(int depth,GameMaster master){
         optimizedHandList = new Hand[depth+1];
         for(int i=0; i<optimizedHandList.length; i++) optimizedHandList[i] = new Hand(-1,-1,-1,-1);
-        this.printHandStack();
         double score = alphabeta(depth,master,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
+        printHandStack();
+        
         return new ReturnValue( score,optimizedHandList[depth] );
     }
    
@@ -156,9 +154,9 @@ public class AlphaBeta {
                 for (int move = 0; move < 8; move++) {
                     //  実現できない場合はスルー
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
-                    if (!cuiclient.GameBoard.formula1(move, move,tmp.nowUnitLocation(id,index).x+movex[move],tmp.nowUnitLocation(id,index).y+movey[move] ,id))  continue;
-                    if (!cuiclient.GameBoard.foumal5(tmp.nowUnitLocation(id,index), movey[move], id) )  continue;
+                    
                     //  実現できる場合はコピーを作成
+                    //  コピー作成ついでに盤面＋方向で指した手を作成
                     Hand hand = tmp.createHand(movex[move], movey[move], index);
                     VirtualGameMaster copy = new VirtualGameMaster(tmp,hand);
                     
@@ -170,7 +168,7 @@ public class AlphaBeta {
                         copy.setPriority(1);
                     }
                     
-                    //  コピーを動かす
+                    //  今指した手でコピーを動かす
                     boolean result = copy.movePos(hand.getX(),hand.getY(),hand.getIndex());
                     if(!result){
                         System.out.println("error");
@@ -196,17 +194,16 @@ public class AlphaBeta {
     
     
     /**
-     * 敵の手も含めたこの後の予測を表示する
-     *
+     * 手の候補スタックを表示する
      * @see AlphaBeta#optimizedHandList
      */
-    private void printHandStack() {
-        for (int i = this.optimizedHandList.length - 1; i > 0; i--) {
+    private void printHandStack(){
+        for(int i=optimizedHandList.length-1; i>0; i--){
             System.out.print("【");
-            System.out.print(this.optimizedHandList[i]);
+            System.out.print( optimizedHandList[i] );
             System.out.print("】 ");
         }
-
+        
     }
     
     

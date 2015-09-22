@@ -22,7 +22,7 @@ package cuiclient;
         public Hand(int x,int y,int index,int id){ this.x = x; this.y = y; this.index = index; this.playerId = id; enable2 = false;}
         public Hand(Hand org){this.x = org.x; this.y = org.y; this.index = org.index; this.playerId = org.playerId; enable2 = false;}
         
-        
+
         
         public boolean equals(int x,int y,int index,int id){ 
             return (this.x==x&&this.y==y&&this.index==index&&this.playerId==id);
@@ -81,7 +81,7 @@ package cuiclient;
             hand.index2 = temp.index;
             hand.x2 = temp.x;
             hand.y2 = temp.y;
-            hand.index2 = temp.index;
+            hand.playerId2 = temp.playerId2;
             hand.enable2 = true;
             
             return hand;
