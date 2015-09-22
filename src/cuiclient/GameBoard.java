@@ -375,9 +375,9 @@ public class GameBoard {
      * 
      */
     public static boolean foumal5(Point unitLocation,int move,int id){
-        if(id == 0 && move == 1 && unitLocation.y != 5)
+        if(id == 0 && move == 1 && unitLocation.y != 4)
             return false;
-        else if(id == 1 && move == -1 && unitLocation.y !=5)
+        else if(id == 1 && move == -1 && unitLocation.y !=4)
             return false;
         return true;
     }
