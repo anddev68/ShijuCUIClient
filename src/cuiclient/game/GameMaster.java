@@ -80,8 +80,15 @@ public class GameMaster implements TurnCounter.Callback{
             }
         }
         
-
-
+        //  タワーの評価を加味する
+        for(int i=0; i<3; i++){
+            if( gameBoard.tower[i] == id){
+                score+=100;
+            }else if(gameBoard.tower[i] == eId){
+                score-=100;
+            }
+        }
+        
 
         
         return score;
