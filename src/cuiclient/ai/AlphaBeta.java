@@ -92,6 +92,7 @@ public class AlphaBeta {
         double score;
         
         if(master.whoIsPlay()==this.id){
+            //  AIのノードの場合
             while(!outQueue.isEmpty()){
                 tmp = outQueue.poll();
                 score = alphabeta(depth - 1, tmp, alpha, beta);    //  再帰した結果を使って結果とする
@@ -100,9 +101,9 @@ public class AlphaBeta {
                     this.optimizedHandList[depth]  = tmp.getLastHand();
                 }
                 if(alpha >=beta ){
-                    //System.out.print("BC ");
+                    System.out.print("BC ");
                     this.optimizedHandList[depth] = tmp.getLastHand();
-                    return alpha;   //  betaカット
+                    return beta;   //  betaカット
                 }
             }
             return alpha;
@@ -115,9 +116,9 @@ public class AlphaBeta {
                     this.optimizedHandList[depth] = tmp.getLastHand();
                 }
                 if (alpha >= beta) {
-                    //System.out.print("AC ");
+                    System.out.print("AC ");
                     this.optimizedHandList[depth] = tmp.getLastHand();
-                    return beta; /* アルファカット */
+                    return alpha; /* アルファカット */
                 }
             }
             return beta;
@@ -156,7 +157,7 @@ public class AlphaBeta {
                     //  定跡チェックを加えた
                     if (!tmp.checkMove(movex[move], movey[move], index))  continue;
                     if (!cuiclient.GameBoard.formula1(move, move, tmp.nowUnitLocation(id, index).x + movex[move], tmp.nowUnitLocation(id, index).y + movey[move], id))  continue;
-        //            if (!cuiclient.GameBoard.formula5(tmp.nowUnitLocation(id, index), movey[move], id)) continue;
+                    if (!cuiclient.GameBoard.formula5(tmp.nowUnitLocation(id, index), movey[move], id)) continue;
                     
                      //  実現できる場合はコピーを作成
                     

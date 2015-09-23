@@ -81,7 +81,7 @@ package cuiclient;
             hand.index2 = temp.index;
             hand.x2 = temp.x;
             hand.y2 = temp.y;
-            hand.playerId2 = temp.playerId2;
+            hand.playerId2 = temp.playerId;
             hand.enable2 = true;
             
             return hand;

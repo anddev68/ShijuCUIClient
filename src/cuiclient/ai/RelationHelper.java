@@ -131,23 +131,25 @@ public class RelationHelper {
                                 //  p==qのとき は位置評価のみ
                                 if (a == c && b == d && e==f) {
                                     PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
+                                }
+                                /*
                                 //  同じIDのとき、味方ユニット間の弱点マッチ（縦と横の関係）同士の結合度が高いものに点数を加える
                                 }else if(e==f && GameBoard.battleTable[b][d]==0){
                                     PARAM_TABLE[a][b][e][c][d][f] += (int)(-GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
                                 //  異なるIDのとき、相性が良いものには距離が近いほうがよい
-                                //  相性が悪いものは遠いほうがよい
-                                }else if(e!=f){
-                                    //  バトルテーブルは相性が良い場合は1を返すので、距離が離れるほどこの値が大きくなる
-                                    //                            相性が悪い場合は-1を返すので、距離が離れるほどこの値は負の方向に大きくなる
-                                    //  この値が大きいと評価がよくなるので、距離を近くするほど大きくしたい、つまり-1をかける
-                                   //PARAM_TABLE[a][b][e][c][d][f] += (int) (-GameBoard.battleTable[b][d] * GameBoard.distance(a % 9, a / 9, c % 9, c / 9)); 
-                                //  それ以外の場合は評価を行わない    
+                                }else if(e!=f && GameBoard.battleTable[b][d]==1){
+                                    PARAM_TABLE[a][b][e][c][d][f] +=(int) (-GameBoard.battleTable[b][d] * GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
+                                //  異なるIDのとき、相性がわるいものには距離が遠いほうがよい    
+                                }else if(e!=f && GameBoard.battleTable[b][d] == -1){
+                                    PARAM_TABLE[a][b][e][c][d][f] = (int) (GameBoard.battleTable[b][d] * GameBoard.distance(a % 9, a / 9, c % 9, c / 9)); //  相性が悪いものへの距離
+                                    //  それ以外の場合は評価を行わない    
                                 }else{
-
+                                    
                                 }
+                                */
                                 //  敵の場合はすべて逆にする
                                 if (e == 1) PARAM_TABLE[a][b][e][c][d][f] *= -1;
-                      
+                                
                             }
                         }
                         
