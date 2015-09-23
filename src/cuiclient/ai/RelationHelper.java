@@ -101,6 +101,7 @@ public class RelationHelper {
         //  id==1の場合は上下反転する必要あり
         
         double score = PARAM_TABLE[r.pPos.x+r.pPos.y*9][r.pIndex][r.pId][r.qPos.x+r.qPos.y*9][r.qIndex][r.qId];
+        if(id==1) score *=-1;
         return score;
     }
     
@@ -136,9 +137,9 @@ public class RelationHelper {
                                 //  同じIDのとき、味方ユニット間の弱点マッチ（縦と横の関係）同士の結合度が高いものに点数を加える
                                 }else if(e==f && GameBoard.battleTable[b][d]==0){
                                     PARAM_TABLE[a][b][e][c][d][f] += (int)(-GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
-                                //  同じIDのとき、味方ユニット間同士の結合度に点数を加える    
-                                } else if (e == f ) {
-                                    //  PARAM_TABLE[a][b][e][c][d][f] += (int) (-GameBoard.distance(a % 9, a / 9, c % 9, c / 9)*0.5);
+                                //  同じIDのとき、味方ユニット間同士の結合度に点数を悪くする    
+                                } else if (e == f  && GameBoard.battleTable[b][d] !=0) {
+                                    PARAM_TABLE[a][b][e][c][d][f] += (int) (GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
                                 //  異なるIDのとき、相性が良いものには距離が近いほうがよい
                                 }else if(e!=f && GameBoard.battleTable[b][d]==1){
                                     PARAM_TABLE[a][b][e][c][d][f] +=(int) (-GameBoard.battleTable[b][d] * GameBoard.distance(a % 9, a / 9, c % 9, c / 9));

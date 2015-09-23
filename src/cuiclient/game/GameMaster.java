@@ -63,6 +63,14 @@ public class GameMaster implements TurnCounter.Callback{
         
         RelationHelper helper = RelationHelper.getInstance();
         
+        //  タワーを2個取られている場合の処理
+        //  取りに行く
+        /*
+        if( gameBoard.sumOwnTower(eId)>1){
+            score = evaluateOnTheBackFoot(id);
+            return score;
+        }
+        */
         
         //  駒間の関係を評価する
         //  ボード上の駒は8個なので、8x8でそうあたりをかける
@@ -83,11 +91,46 @@ public class GameMaster implements TurnCounter.Callback{
         //  タワーの評価を加味する
         for(int i=0; i<3; i++){
             if( gameBoard.tower[i] == id){
-                score+=100;
+                score+=150; // 200が安定
             }else if(gameBoard.tower[i] == eId){
-                score-=100;
+                score-=150;
             }
         }
+        
+        
+        //  点数の評価を加味する
+        score += this.pointController.getPoint(id) - this.pointController.getPoint(eId);
+        
+
+        /*
+        for(int i=0; i<3; i++){
+            Point target = GameBoard.towerPos[i];
+            int count = 0;
+            for(int j=0; j<4; j++){
+                if(distance(gameBoard.unitLocation[id][j],target)==0){
+                    count++;
+                }
+            }
+            if(count>=3){   //  3結合があった
+                System.out.print(" <<3ketsugou>> ");
+                //  敵が近くにいるかチェック
+                count = 0;
+                for(int j=0; j<4; j++){
+                    //  そのマスへの距離が1以下の敵を探す
+                    if(distance(gameBoard.unitLocation[eId][j],target)<2){
+                        count++;
+                    }
+                }
+                if(count<2){
+                    //  近くにいる敵が1匹以下の場合は3結合をやめるようにする
+                    score -=200;
+                }
+                
+                break;
+            }
+
+        }
+                */
         
 
         
@@ -95,6 +138,30 @@ public class GameMaster implements TurnCounter.Callback{
        
         
     }
+    
+    
+    /**
+     * 劣性のときの評価関数
+     * タワーが2個取られているときの評価関数
+     */
+    private double evaluateOnTheBackFoot(int id){
+        //  取りやすいほうのタワーを求める
+        int min = 100;
+        for(int j=0; j<3; j++){
+            if( gameBoard.tower[j] == id) continue; //既に取ってるタワーは無視
+            int total = 100;  //  総距離
+            for(int i=0; i<4; i++){
+                total+= (int)( Math.pow( GameBoard.distance( gameBoard.unitLocation[id][i],GameBoard.towerPos[j]) ,2 ) );
+            }
+            if(total<min){
+                min = total;
+            }
+        }
+        //  取りやすいほうのタワーへの距離を評価とする
+        return -min;
+        
+    }
+    
     
     /**
      * 指定した位置にユニットを動かす
