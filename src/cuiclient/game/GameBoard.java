@@ -80,12 +80,13 @@ public class GameBoard {
         return allUnitIndex % 4;
     }
     
+    
+    
     /**
      * 現在敵の所有権または未所有となっている一番短いタワーまでの距離を算出する
      */
     public int getEnemyTowerDistance(int id,int index){
-        int eId = id==0 ? 1:0;
-        int min = 0;
+        int min = 100;
         for(int i=0; i<3; i++){
             if(this.tower[i]!=id){
                 int dist = distance(unitLocation[id][index],towerPos[i]);
@@ -94,6 +95,19 @@ public class GameBoard {
         }
         return min;
         
+    }
+    
+    /**
+     * 現在所有しているユニットの数を返す
+     */
+    public int sumOwnTower(int id){
+        int sum = 0;
+        for(int i=0; i<3; i++){
+            if(this.tower[i]==id){
+                sum++;
+            }
+        }
+        return sum;
     }
     
     

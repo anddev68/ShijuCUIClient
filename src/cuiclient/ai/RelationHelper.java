@@ -138,7 +138,7 @@ public class RelationHelper {
                                     PARAM_TABLE[a][b][e][c][d][f] += (int)(-GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
                                 //  同じIDのとき、味方ユニット間同士の結合度に点数を加える    
                                 } else if (e == f ) {
-                                    PARAM_TABLE[a][b][e][c][d][f] += (int) (-GameBoard.distance(a % 9, a / 9, c % 9, c / 9)*0.5);
+                                    //  PARAM_TABLE[a][b][e][c][d][f] += (int) (-GameBoard.distance(a % 9, a / 9, c % 9, c / 9)*0.5);
                                 //  異なるIDのとき、相性が良いものには距離が近いほうがよい
                                 }else if(e!=f && GameBoard.battleTable[b][d]==1){
                                     PARAM_TABLE[a][b][e][c][d][f] +=(int) (-GameBoard.battleTable[b][d] * GameBoard.distance(a % 9, a / 9, c % 9, c / 9));

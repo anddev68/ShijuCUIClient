@@ -92,16 +92,15 @@ public class CUIClient {
         System.out.println( gameMaster.evaluate(0, null) );
         
         
-        log("start AI.");
-
-        //MinMax minMax = new MinMax(teamId);
-        //minMax.setParams(0.686014,0.730685,0.520478,0.206630,0.265467);
+        System.out.print("start AI ");
         
-        //MinMax.ReturnValue result = minMax.minmax(4, gameBoard);
+        
+        //  タワーの本数が優勢であればAlphaBetaで行く
+        System.out.print("Method -> alphabeta");
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
         cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameMaster);
        
-        //  結果によってはパラメータを変え再度AlphaBetaを適用する
+        //  劣性であれば逆境AIでいく
         
         
         
