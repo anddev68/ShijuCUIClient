@@ -130,12 +130,15 @@ public class RelationHelper {
                                 
                                 //  p==qのとき は位置評価のみ
                                 if (a == c && b == d && e==f) {
-                                    PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
+                                    //  PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
                                 
                                 
                                 //  同じIDのとき、味方ユニット間の弱点マッチ（縦と横の関係）同士の結合度が高いものに点数を加える
                                 }else if(e==f && GameBoard.battleTable[b][d]==0){
                                     PARAM_TABLE[a][b][e][c][d][f] += (int)(-GameBoard.distance(a % 9, a / 9, c % 9, c / 9));
+                                //  同じIDのとき、味方ユニット間同士の結合度に点数を加える    
+                                } else if (e == f ) {
+                                    PARAM_TABLE[a][b][e][c][d][f] += (int) (-GameBoard.distance(a % 9, a / 9, c % 9, c / 9)*0.5);
                                 //  異なるIDのとき、相性が良いものには距離が近いほうがよい
                                 }else if(e!=f && GameBoard.battleTable[b][d]==1){
                                     PARAM_TABLE[a][b][e][c][d][f] +=(int) (-GameBoard.battleTable[b][d] * GameBoard.distance(a % 9, a / 9, c % 9, c / 9));

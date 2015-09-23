@@ -81,10 +81,12 @@ public class GameMaster implements TurnCounter.Callback{
         }
         
         //  タワーの保持状態と距離の評価
+        /*
         for(int i=0; i<4; i++){
             score -= gameBoard.getEnemyTowerDistance(id, i);   //  自分の距離がある分だけ引く
             score += gameBoard.getEnemyTowerDistance(eId, i);
         }
+        */
         
         
         //  敵の駒のみ評価とする

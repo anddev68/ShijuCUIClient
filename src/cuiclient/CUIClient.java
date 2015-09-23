@@ -101,6 +101,9 @@ public class CUIClient {
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
         cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameMaster);
        
+        //  結果によってはパラメータを変え再度AlphaBetaを適用する
+        
+        
         
         Hand hand = result.optimized;
         System.out.println();
