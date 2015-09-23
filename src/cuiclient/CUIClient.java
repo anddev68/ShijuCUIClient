@@ -101,6 +101,9 @@ public class CUIClient {
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
         cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameMaster);
        
+        //  結果によってはパラメータを変え再度AlphaBetaを適用する
+        
+        
         
         Hand hand = result.optimized;
         System.out.println();
@@ -123,8 +126,8 @@ public class CUIClient {
         gameMaster.setUnitLocation(4, 7, 1, 0);
         gameMaster.setUnitLocation(4, 7, 2, 0);
         gameMaster.setUnitLocation(4, 6, 3, 0);
-        gameMaster.setUnitLocation(3, 2, 0, 1);
-        gameMaster.setUnitLocation(4, 2, 1, 1);
+        gameMaster.setUnitLocation(4, 2, 0, 1);
+        gameMaster.setUnitLocation(5, 2, 1, 1);
         gameMaster.setUnitLocation(4, 1, 2, 1);
         gameMaster.setUnitLocation(4, 1, 3, 1);
         gameMaster.setTower(0, -1);
@@ -241,7 +244,7 @@ public class CUIClient {
      */
     public static void main(String[] args) {
         new CUIClient().start();
-    //    new CUIClient().test();
+        //  new CUIClient().test();
         
     }
     
