@@ -88,17 +88,17 @@ public class CUIClient {
 
     void startAI(){
         
-        System.out.print("current score:");
-        System.out.println( gameMaster.evaluate(0, null) );
+        //System.out.print("current score:");
+        //System.out.println( gameMaster.evaluate(0, null) );
         
         
         System.out.print("start AI ");
         
-        
+
         //  タワーの本数が優勢であればAlphaBetaで行く
         System.out.println();
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
-        cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(5, gameMaster);
+        cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameMaster);
         System.out.println();
                
         Hand hand = result.optimized;
