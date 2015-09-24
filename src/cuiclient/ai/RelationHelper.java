@@ -131,7 +131,7 @@ public class RelationHelper {
                                 
                                 //  p==qのとき は位置評価のみ
                                 if (a == c && b == d && e==f) {
-                                    //  PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
+                                    //PARAM_TABLE[a][b][e][c][d][f] = (int) (-Math.pow(GameBoard.distanceTower(a % 9, a / 9), 2));
                                 
                                 
                                 //  同じIDのとき、味方ユニット間の弱点マッチ（縦と横の関係）同士の結合度が高いものに点数を加える

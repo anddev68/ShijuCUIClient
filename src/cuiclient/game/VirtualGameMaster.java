@@ -22,6 +22,7 @@ public class VirtualGameMaster extends GameMaster implements Comparable<VirtualG
             //  VirtualGameMasterノードである場合は
             //  同じIDによる2手差しの可能性がある
             VirtualGameMaster vgm = (VirtualGameMaster) org;
+            this.priority = vgm.priority;
             if(vgm.hand.getPlayerId() == hand.getPlayerId()){
                 //  同じIDの場合はコピーして追加する
                 this.hand = Hand.createHandInsertFront(vgm.hand, hand);
@@ -29,16 +30,18 @@ public class VirtualGameMaster extends GameMaster implements Comparable<VirtualG
             }else{
                 //  2手差しでない場合は新規作成
                 this.hand = hand;
-            }
+                
+            }   
             
         }else{
             //  GameMasterノードである場合は前指した手がないため新しい手を保存する
             this.hand = hand;
+            priority = 0;
         }
         
 
         
-        priority = 0;
+        
     }
     
     
