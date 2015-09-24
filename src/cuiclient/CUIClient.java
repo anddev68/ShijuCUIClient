@@ -180,8 +180,13 @@ public class CUIClient {
      */
     private class MyPlayReceiver implements PlayReceiver{
             
-        //  �?字を送信したのでOKを�?機す�?
+        //  ボードを受信し、OK待機状態になります
         boolean waitOK;
+        
+        //  couldMoveが呼ばれたときはリカバリーモードへ移行する
+        //  次にOKが呼ばれるまでリカバリーモードで動かします「
+        boolean onRecoveryMode;
+        
         
         //  couldmoveが呼ばれた回数
         int errorCount;
@@ -189,6 +194,7 @@ public class CUIClient {
         public MyPlayReceiver(){
             gameMaster = new GameMaster();
             errorCount = 0;
+            onRecoveryMode = false;
         }
         
         @Override
@@ -220,23 +226,28 @@ public class CUIClient {
         public void onReceiveLineEnd() {
             //  ボ�?�ドが更新された�?�でAIを使�?ま�?
             waitOK = true;
-            startAI();
+            if(!onRecoveryMode)
+                startAI();
         }
 
         @Override
         public void onReceiveOK() {
-            if(waitOK){ //  PlayMessageを�?�ったあとの�?機状態かど�?か判�?
+            if(waitOK){ //  PlayMessageを送ったときのOKのみに反応するように設定
                 waitOK = false;
                 //  次のターンへ進めま�?
                 gameMaster.nextPhase();
+                //  リカバリーモードは切る
+                onRecoveryMode = false;
             }
         }
 
         @Override
         public void onReceiveCoundNotMove() {
             System.out.println("Cound Not Move");
+            
             //  これは動けなかった場合に帰ってくる
             //  動けなかった場合は適当になんでもいいので送る
+            onRecoveryMode = true;
             thread.sendPlayMessage(0,errorCount%9, errorCount/9);
             errorCount++;
             if(errorCount>81) errorCount  = 0;
