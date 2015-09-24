@@ -26,10 +26,15 @@ public class AlphaBeta {
     private int id; //  プレイヤーのID
     private int max_depth;  //  最大深度
     
+    
     private Hand[] optimizedHandList;  //  depthごとの最善手
     
     //  係数
     private static final double[] K = {0.686014, 0.730685, 0.520478, 0.206630, 0.265467};
+    
+    //  展開ノード数がこれを超えた場合、最大深度を変更します
+    private static final int MAX_NODE_NUM = 100;
+    private static final int MAX_DEPTH = 4;
     
     public AlphaBeta(int id){
         this.id = id;
@@ -96,6 +101,11 @@ public class AlphaBeta {
         
         int taskNum = outQueue.size();
         int progress =0;
+        
+        //  展開ノード数によっては深さに上限を出す
+        if( MAX_NODE_NUM < taskNum ){
+            max_depth = MAX_DEPTH;
+        }
         
         if(master.whoIsPlay()==this.id){
             //  AIのノードの場合
