@@ -24,6 +24,7 @@ public class AlphaBeta {
    // private LinkedList<GameMaster> inQueue;   //  展開待ち行列
    // private LinkedList<VirtualGameMaster> outQueue;   //  展開済み評価待ち行列
     private int id; //  プレイヤーのID
+    private int max_depth;  //  最大深度
     
     private Hand[] optimizedHandList;  //  depthごとの最善手
     
@@ -45,6 +46,7 @@ public class AlphaBeta {
      */
     public ReturnValue alphabeta(int depth,GameMaster master){
         optimizedHandList = new Hand[depth+1];
+        max_depth = depth;
         for(int i=0; i<optimizedHandList.length; i++) optimizedHandList[i] = new Hand(-1,-1,-1,-1);
         double score = alphabeta(depth,master,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
         printHandStack();
@@ -92,9 +94,13 @@ public class AlphaBeta {
         VirtualGameMaster tmp;
         double score;
         
+        int taskNum = outQueue.size();
+        int progress =0;
+        
         if(master.whoIsPlay()==this.id){
             //  AIのノードの場合
             while(!outQueue.isEmpty()){
+                
                 tmp = outQueue.poll();
                 score = alphabeta(depth - 1, tmp, alpha, beta);    //  再帰した結果を使って結果とする
                 if(score > alpha){ //  alphaの高いやつを選択
@@ -102,9 +108,15 @@ public class AlphaBeta {
                     this.optimizedHandList[depth]  = tmp.getLastHand();
                 }
                 if(alpha >=beta ){
-                    System.out.print("BC ");
+                    //System.out.print("BC ");
                     this.optimizedHandList[depth] = tmp.getLastHand();
                     return beta;   //  betaカット
+                }
+                if(max_depth==depth){
+                    //  最大深度のときは進捗表示
+                    //  最大数を10としたスケールで表示
+                    printProgress(progress,taskNum);
+                    progress++;
                 }
             }
             return alpha;
@@ -117,7 +129,7 @@ public class AlphaBeta {
                     this.optimizedHandList[depth] = tmp.getLastHand();
                 }
                 if (alpha >= beta) {
-                    System.out.print("AC ");
+                    //System.out.print("AC ");
                     this.optimizedHandList[depth] = tmp.getLastHand();
                     return alpha; /* アルファカット */
                 }
@@ -221,6 +233,27 @@ public class AlphaBeta {
     
     
     
+    /**
+     * 進捗表示パターン1
+     * 
+     * 100% |====================>(20個)|
+     */
+    private void printProgress(int current,int max){
+        System.out.printf("%3d%%|", current*100/max);
+        for(int i=0;i<current*30/max; i++){  //  max30個で表示
+            System.out.print("=");
+        }
+        System.out.print(">|");
+        System.out.printf("%d/%d",current,max);
+        System.out.print("\r");
+        
+        /*
+        if(current==max){
+            System.out.println();
+            System.out.println("Complete!!");
+        }
+        */
+    }
     
     
     

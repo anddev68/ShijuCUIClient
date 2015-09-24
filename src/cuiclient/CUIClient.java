@@ -96,10 +96,11 @@ public class CUIClient {
         
         
         //  タワーの本数が優勢であればAlphaBetaで行く
-        System.out.print("Method -> alphabeta");
+        System.out.println();
         cuiclient.ai.AlphaBeta alphaBeta = new cuiclient.ai.AlphaBeta(teamId);
-        cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(4, gameMaster);
-       
+        cuiclient.ai.AlphaBeta.ReturnValue result = alphaBeta.alphabeta(5, gameMaster);
+        System.out.println();
+        
         //  劣性であれば逆境AIでいく
         
         
